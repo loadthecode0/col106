@@ -20,6 +20,7 @@ private:
     
     // Other data members and functions specific to Chaining
     bool bucketExists(int hashCode);
+    int dbsize;
 };
 
 #endif // CHAINING_H

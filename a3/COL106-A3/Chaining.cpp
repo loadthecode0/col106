@@ -18,7 +18,8 @@ void Chaining::createAccount(std::string id, int count) {
         bankStorage2d[accHash] = newBucket; //push 
     } else { //collision situation
         bankStorage2d[accHash].push_back(newAcc); //push new acc into existing bucket at that hash value
-    }    
+    }  
+    dbsize++;  
 }
 
 std::vector<int> Chaining::getTopK(int k) {
@@ -28,30 +29,65 @@ std::vector<int> Chaining::getTopK(int k) {
 
 int Chaining::getBalance(std::string id) {
     int accHash = hash(id); //generate hash code
-    if (!bucketExists(accHash)) { //brand new hash code generated
+    if (!bucketExists(accHash)) {
         return -1;
     } else { //collision situation
-        for () //push new acc into existing bucket at that hash value
+        for (Account a:bankStorage2d[accHash]) { //iterate over all accounts in bucket
+            if (a.id == id) {
+                return a.balance;
+            }
+        }
+        return -1; //not found
     }
-    return 0; // Placeholder return value
 }
 
 void Chaining::addTransaction(std::string id, int count) {
-    // IMPLEMENT YOUR CODE HERE
+    int accHash = hash(id); //generate hash code
+    if (!bucketExists(accHash)) {
+        createAccount(id, count);
+    } else { //collision situation
+        for (Account a:bankStorage2d[accHash]) { //iterate over all accounts in bucket
+            if (a.id == id) {
+                a.balance += count;
+                break;
+            } 
+        }
+        createAccount(id, count); //acc not found, won't come here if break is used
+    }
 }
 
 bool Chaining::doesExist(std::string id) {
-    // IMPLEMENT YOUR CODE HERE
-    return false; // Placeholder return value
+    int accHash = hash(id); //generate hash code
+    if (!bucketExists(accHash)) {
+        return false;
+    } else { //collision situation
+        for (Account a:bankStorage2d[accHash]) { //iterate over all accounts in bucket
+            if (a.id == id) {
+                return true;
+            }
+        }
+        return false; //not found
+    }
 }
 
 bool Chaining::deleteAccount(std::string id) {
-    // IMPLEMENT YOUR CODE HERE
-    return false; // Placeholder return value
+    int accHash = hash(id); //generate hash code
+    if (!bucketExists(accHash)) {
+        return false;
+    } else { //collision situation
+        int i = 0;
+        while (i<bankStorage2d[accHash].size()) {
+            if ((bankStorage2d[accHash])[i].id == id) {
+                (bankStorage2d[accHash]).erase(bankStorage2d[accHash].begin() + i);
+                return true; break; //break wasn't necessary ig
+            }
+            i++;
+        }
+        return false; //not found
+    }
 }
 int Chaining::databaseSize() {
-    // IMPLEMENT YOUR CODE HERE
-    return 0; // Placeholder return value
+    return dbsize;
 }
 
 int horner(const std::string& id, int x, int startInd, int endInd) {
