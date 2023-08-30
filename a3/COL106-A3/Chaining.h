@@ -19,6 +19,7 @@ public:
 private:
     
     // Other data members and functions specific to Chaining
+    bool bucketExists(int hashCode);
 };
 
 #endif // CHAINING_H
