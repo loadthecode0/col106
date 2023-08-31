@@ -16,13 +16,13 @@ int horner(string id, int x, int startInd, int endInd) {
 int main()
 {
 
-    string id = "SBIN0009835_9999999999";
+    string id = "SBIN0009835_0999999990";
     int a = horner (id, 3, 0, 3);
     int b = horner (id, 3, 4, 10); 
     int c = horner (id, 5, 12, 21);
     cout << a << " " << b << " " << c << " \n";
     cout << a+b+c << "\n";
-    cout << (a+b+c) % 100000;
+    cout << (a+b+c) % 130003;
 
     return 0;
 }

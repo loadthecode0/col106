@@ -7,6 +7,7 @@
 
 class Chaining : public BaseClass {
 public:
+    Chaining();
     void createAccount(std::string id, int count) override;
     std::vector<int> getTopK(int k) override;
     int getBalance(std::string id) override;
@@ -19,7 +20,6 @@ public:
 private:
     
     // Other data members and functions specific to Chaining
-    bool bucketExists(int hashCode);
     int dbsize;
 };
 
