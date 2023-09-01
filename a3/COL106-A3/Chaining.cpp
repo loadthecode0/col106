@@ -65,7 +65,7 @@ std::vector<int> Chaining::getTopK(int k) {
     }
     quickSort(allBalances, 0, dbsize-1); //sorts in ascending order
     int n = (k<=dbsize) ? k : dbsize; // n is min of k and dbsize
-    for (int i = dbsize-1; i > 0; i--) {
+    for (int i = dbsize-1; i > dbsize-n-1; i--) {
         topK.push_back(allBalances[i]);
     }
 
@@ -109,7 +109,7 @@ bool Chaining::deleteAccount(std::string id) {
     while (i<bankStorage2d[accHash].size()) {
         if ((bankStorage2d[accHash])[i].id == id) {
             (bankStorage2d[accHash]).erase(bankStorage2d[accHash].begin() + i);
-            dbsize--;
+            dbsize--;   
             return true; break; //break wasn't necessary ig
         }
         i++;

@@ -17,6 +17,10 @@ public:
 
 private:
     // Other data members and functions specific to Quadratic Probing
+    int dbsize = 0;
+    std::vector<int> available = std::vector<int>(130003, 1); //for finding if slot is empty or not; modified after additions and deletions.
+    int newKeyProbingResult (std::string &id);
+    int indexFinder (std::string &id);
 };
 
 #endif // QUADRATICPROBING_H

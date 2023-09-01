@@ -1,23 +1,19 @@
 #include <bits/stdc++.h>
 using namespace std;
+#include "BaseClass.h"
 
-bool t1(int x) {
-    return x;
-}
 
 int main()
 {
 
 
 
-    vector<vector<int>> vec1 ;
-    vec1.resize(5, {});
-    cout << 1 << " " << vec1[2].size() << " " << typeid(vec1[2]).name() << "\n";
-    vec1[2].push_back(2);
-    cout << 1.1 << " " << vec1[2].size() << " " << typeid(vec1[2]).name() << "\n";
+    vector<int> v1(5, 2);
 
-    vector<int> vec2;
-    cout << 2 << " " << vec2.size()<< "\n";
+    for (int x : v1) {
+        cout << x << " ";
+    }
+
 
     return 0;
 }

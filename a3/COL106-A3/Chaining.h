@@ -20,7 +20,7 @@ public:
 private:
     
     // Other data members and functions specific to Chaining
-    int dbsize;
+    int dbsize = 0;
 };
 
 #endif // CHAINING_H
