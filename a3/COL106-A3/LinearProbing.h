@@ -22,6 +22,9 @@ private:
     std::vector<int> available = std::vector<int>(130003, 1); //for finding if slot is empty or not; modified after additions and deletions.
     int newKeyProbingResult (std::string &id);
     int indexFinder (std::string &id);
+    int horner(const std::string& id, int x, int startInd, int endInd);
+    void swapElts(int* a, int* b);
+    void quickSort(std::vector<int> &v, int start, int end);
 };
 
 #endif // LINEARPROBING_H

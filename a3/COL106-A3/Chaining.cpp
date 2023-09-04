@@ -136,54 +136,54 @@ int Chaining::hash(std::string id) {
     return (a+b+c) % 130003;
 }
 
-int main() {
-    Chaining *db = new Chaining;
+// int main() {
+//     Chaining *db = new Chaining;
 
-    std::cout << db->databaseSize() << "\n";
-    db->createAccount("SBIN2390298_1212399209", 1000);
-    db->createAccount("SBIN827462_1212384829", 1500);
-    db->createAccount("SBIN2546182_5121789421", 2000);
+//     std::cout << db->databaseSize() << "\n";
+//     db->createAccount("SBIN2390298_1212399209", 1000);
+//     db->createAccount("SBIN827462_1212384829", 1500);
+//     db->createAccount("SBIN2546182_5121789421", 2000);
 
-    std::cout << db->databaseSize() << "\n";
+//     std::cout << db->databaseSize() << "\n";
 
-    std::cout << db->getBalance("SBIN2390298_1212399209") << "\n";
-    std::cout << db->getBalance("SBIN827462_1212384829") << "\n";
-    std::cout << db->getBalance("SBIN2546182_5121789421")<< "\n";
+//     std::cout << db->getBalance("SBIN2390298_1212399209") << "\n";
+//     std::cout << db->getBalance("SBIN827462_1212384829") << "\n";
+//     std::cout << db->getBalance("SBIN2546182_5121789421")<< "\n";
 
-    std::cout << db->databaseSize() << "\n";
+//     std::cout << db->databaseSize() << "\n";
 
-    db->addTransaction("SBIN2390298_1212399209", -200);
-    db->addTransaction("SBIN827462_1212384829", 300);
-    db->addTransaction("SBIN2546182_5121789421", -400);
+//     db->addTransaction("SBIN2390298_1212399209", -200);
+//     db->addTransaction("SBIN827462_1212384829", 300);
+//     db->addTransaction("SBIN2546182_5121789421", -400);
 
-    std::cout << db->databaseSize() << "\n";
+//     std::cout << db->databaseSize() << "\n";
 
-    // assert(db->getBalance("Alice") == 800);
-    // assert(db->getBalance("Bob") == 1800);
-    // assert(db->getBalance("Charlie") == 1600);
-    std::cout << db->getBalance("SBIN2390298_1212399209") << "\n";
-    std::cout << db->getBalance("SBIN827462_1212384829") << "\n";
-    std::cout << db->getBalance("SBIN2546182_5121789421")<< "\n";
+//     // assert(db->getBalance("Alice") == 800);
+//     // assert(db->getBalance("Bob") == 1800);
+//     // assert(db->getBalance("Charlie") == 1600);
+//     std::cout << db->getBalance("SBIN2390298_1212399209") << "\n";
+//     std::cout << db->getBalance("SBIN827462_1212384829") << "\n";
+//     std::cout << db->getBalance("SBIN2546182_5121789421")<< "\n";
 
-    std::vector<int> topBalances = db->getTopK(2);
-    for (int x : topBalances) {
-        std::cout << x << " ";
-    }
-    std :: cout << " \n";
-    std::cout << (topBalances.size() == 2) << "\n";
-    std :: cout << (topBalances[0] == 1800) << "\n";
-    std :: cout << (topBalances[1] == 1600) << "\n";
+//     std::vector<int> topBalances = db->getTopK(2);
+//     for (int x : topBalances) {
+//         std::cout << x << " ";
+//     }
+//     std :: cout << " \n";
+//     std::cout << (topBalances.size() == 2) << "\n";
+//     std :: cout << (topBalances[0] == 1800) << "\n";
+//     std :: cout << (topBalances[1] == 1600) << "\n";
 
-    std :: cout << (db->databaseSize() == 3) << "\n";
-    std :: cout << (db->doesExist("SBIN2390298_1212399209")) << "\n";
-    std :: cout << (db->doesExist("SBIN2390298_1212399609")) << "\n";
+//     std :: cout << (db->databaseSize() == 3) << "\n";
+//     std :: cout << (db->doesExist("SBIN2390298_1212399209")) << "\n";
+//     std :: cout << (db->doesExist("SBIN2390298_1212399609")) << "\n";
 
-    // assert(db->databaseSize() == 3);
+//     // assert(db->databaseSize() == 3);
 
-    // assert(db->doesExist("Alice"));
-    // assert(!db->doesExist("Eve"));
+//     // assert(db->doesExist("Alice"));
+//     // assert(!db->doesExist("Eve"));
 
-    std :: cout << (db->deleteAccount("SBIN2390298_1212399209")) << "\n";
-    std :: cout << (db->deleteAccount("SBIN2390298_1212399609")) << "\n";
-    std::cout << db->databaseSize() << "\n";
-}
+//     std :: cout << (db->deleteAccount("SBIN2390298_1212399209")) << "\n";
+//     std :: cout << (db->deleteAccount("SBIN2390298_1212399609")) << "\n";
+//     std::cout << db->databaseSize() << "\n";
+// }

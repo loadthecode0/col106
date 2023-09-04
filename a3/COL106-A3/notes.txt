@@ -3,6 +3,9 @@
 3. format code to look nicer.
 4. marking deletion concept is important for lookups!!!
 5. test out probing methods.
+6. For getTopK, don't push all values! Push only those which are available[.] = 0 slots!!
+
+!!need to debug getTopK in Probing 
 
 -- check finder function in LinearProbing
 

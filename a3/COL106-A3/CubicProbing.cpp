@@ -23,14 +23,14 @@ void CubicProbing::createAccount(std::string id, int count) {
     dbsize++;
 }
 
-void swapElts(int* a, int* b)
+void CubicProbing::swapElts(int* a, int* b)
 {
     int temp = *a;
     *a = *b;
     *b = temp;
 }
 
-void quickSort(std::vector<int> &v, int start, int end) {
+void CubicProbing::quickSort(std::vector<int> &v, int start, int end) {
     if (start < end) {
         int n = end - start + 1;
         int pivotIndex = ((rand()) % (end - start + 1)) + start;
@@ -69,16 +69,17 @@ std::vector<int> CubicProbing::getTopK(int k) {
     std::vector<int> topK;
 
     //iterate over all accounts to push in allBalances;
-    for (Account a : bankStorage1d) {
-        if (a.balance > 0) {
-            allBalances.push_back(a.balance);
+    for (int i = 0; i < 130003; i++) {
+        if (available[i] == 0) { //FILLED slots
+            allBalances.push_back(bankStorage1d[i].balance);
         }
     }
-    quickSort(allBalances, 0, allBalances.size() - 1); //sorts in ascending order
-    int n = (k<=allBalances.size()) ? k : allBalances.size(); // n is min of k and dbsize
-    for (int i = allBalances.size()-1; i > allBalances.size() - n - 1; i--) {
+    quickSort(allBalances, 0, dbsize - 1); //sorts in ascending order
+    int n = (k<=dbsize) ? k : dbsize; // n is min of k and dbsize
+    for (int i = dbsize-1; i > dbsize - n - 1; i--) {
         topK.push_back(allBalances[i]);
     }
+
     return topK;
 }
 
@@ -101,6 +102,7 @@ int CubicProbing::indexFinder (std::string &id) { //returns index at which key i
             }
         }
     }
+    return -1; //default return value
 }
 
 int CubicProbing::getBalance(std::string id) {
@@ -142,7 +144,7 @@ bool CubicProbing::deleteAccount(std::string id) {
 int CubicProbing::databaseSize() {
     return dbsize;
 }
-int horner(const std::string& id, int x, int startInd, int endInd) {
+int CubicProbing::horner(const std::string& id, int x, int startInd, int endInd) {
     int output = int(id[endInd]); // Initialize output
     // Evaluate value of polynomial using Horner's method
     for (int i=endInd-1; i>=startInd; i--) {
@@ -157,3 +159,55 @@ int CubicProbing::hash(std::string id) {
     int c = horner (id, 5, 12, 21);
     return (a+b+c) % 130003;
 }
+
+// int main() {
+//     CubicProbing *db = new CubicProbing;
+
+//     std::cout << db->databaseSize() << "\n";
+//     db->createAccount("SBIN2390298_1212399209", 1000);
+//     db->createAccount("SBIN827462_1212384829", 1500);
+//     db->createAccount("SBIN2546182_5121789421", 2000);
+
+//     std::cout << db->databaseSize() << "\n";
+
+//     std::cout << db->getBalance("SBIN2390298_1212399209") << "\n";
+//     std::cout << db->getBalance("SBIN827462_1212384829") << "\n";
+//     std::cout << db->getBalance("SBIN2546182_5121789421")<< "\n";
+
+//     std::cout << db->databaseSize() << "\n";
+
+//     db->addTransaction("SBIN2390298_1212399209", -200);
+//     db->addTransaction("SBIN827462_1212384829", 300);
+//     db->addTransaction("SBIN2546182_5121789421", -400);
+
+//     std::cout << db->databaseSize() << "\n";
+
+//     // assert(db->getBalance("Alice") == 800);
+//     // assert(db->getBalance("Bob") == 1800);
+//     // assert(db->getBalance("Charlie") == 1600);
+//     std::cout << db->getBalance("SBIN2390298_1212399209") << "\n";
+//     std::cout << db->getBalance("SBIN827462_1212384829") << "\n";
+//     std::cout << db->getBalance("SBIN2546182_5121789421")<< "\n";
+
+//     std::vector<int> topBalances = db->getTopK(2);
+//     for (int x : topBalances) {
+//         std::cout << x << " ";
+//     }
+//     std :: cout << " \n";
+//     std::cout << (topBalances.size() == 2) << "\n";
+//     std :: cout << (topBalances[0] == 1800) << "\n";
+//     std :: cout << (topBalances[1] == 1600) << "\n";
+
+//     std :: cout << (db->databaseSize() == 3) << "\n";
+//     std :: cout << (db->doesExist("SBIN2390298_1212399209")) << "\n";
+//     std :: cout << (db->doesExist("SBIN2390298_1212399609")) << "\n";
+
+//     // assert(db->databaseSize() == 3);
+
+//     // assert(db->doesExist("Alice"));
+//     // assert(!db->doesExist("Eve"));
+
+//     std :: cout << (db->deleteAccount("SBIN2390298_1212399209")) << "\n";
+//     std :: cout << (db->deleteAccount("SBIN2390298_1212399609")) << "\n";
+//     std::cout << db->databaseSize() << "\n";
+// }
