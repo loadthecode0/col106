@@ -1,7 +1,8 @@
 #include "Chaining.h"
+#define hashPrime 130003
 
 Chaining :: Chaining () { //constructor
-    bankStorage2d.resize(130003, {}); //initialize vector of 130003 empty buckets
+    bankStorage2d.resize(hashPrime, {}); //initialize vector of hashPrime empty buckets
 }
 
 void Chaining::createAccount(std::string id, int count) {
@@ -12,14 +13,14 @@ void Chaining::createAccount(std::string id, int count) {
     dbsize++;
 }
 
-void swapElts(int* a, int* b)
+void Chaining::swapElts(int* a, int* b)
 {
     int temp = *a;
     *a = *b;
     *b = temp;
 }
 
-void quickSort(std::vector<int> &v, int start, int end) {
+void Chaining::quickSort(std::vector<int> &v, int start, int end) {
     if (start < end) {
         int n = end - start + 1;
         int pivotIndex = ((rand()) % (end - start + 1)) + start;
@@ -58,7 +59,7 @@ std::vector<int> Chaining::getTopK(int k) {
     std::vector<int> topK;
 
     //iterate over all accounts to push in allBalances;
-    for (int i = 0; i < 130003; i++) {
+    for (int i = 0; i < hashPrime; i++) {
         for (Account a : bankStorage2d[i]) {
             allBalances.push_back(a.balance);
         }
@@ -133,57 +134,5 @@ int Chaining::hash(std::string id) {
     int a = horner (id, 3, 0, 3);
     int b = horner (id, 3, 4, 10); 
     int c = horner (id, 5, 12, 21);
-    return (a+b+c) % 130003;
+    return (a+b+c) % hashPrime;
 }
-
-// int main() {
-//     Chaining *db = new Chaining;
-
-//     std::cout << db->databaseSize() << "\n";
-//     db->createAccount("SBIN2390298_1212399209", 1000);
-//     db->createAccount("SBIN827462_1212384829", 1500);
-//     db->createAccount("SBIN2546182_5121789421", 2000);
-
-//     std::cout << db->databaseSize() << "\n";
-
-//     std::cout << db->getBalance("SBIN2390298_1212399209") << "\n";
-//     std::cout << db->getBalance("SBIN827462_1212384829") << "\n";
-//     std::cout << db->getBalance("SBIN2546182_5121789421")<< "\n";
-
-//     std::cout << db->databaseSize() << "\n";
-
-//     db->addTransaction("SBIN2390298_1212399209", -200);
-//     db->addTransaction("SBIN827462_1212384829", 300);
-//     db->addTransaction("SBIN2546182_5121789421", -400);
-
-//     std::cout << db->databaseSize() << "\n";
-
-//     // assert(db->getBalance("Alice") == 800);
-//     // assert(db->getBalance("Bob") == 1800);
-//     // assert(db->getBalance("Charlie") == 1600);
-//     std::cout << db->getBalance("SBIN2390298_1212399209") << "\n";
-//     std::cout << db->getBalance("SBIN827462_1212384829") << "\n";
-//     std::cout << db->getBalance("SBIN2546182_5121789421")<< "\n";
-
-//     std::vector<int> topBalances = db->getTopK(2);
-//     for (int x : topBalances) {
-//         std::cout << x << " ";
-//     }
-//     std :: cout << " \n";
-//     std::cout << (topBalances.size() == 2) << "\n";
-//     std :: cout << (topBalances[0] == 1800) << "\n";
-//     std :: cout << (topBalances[1] == 1600) << "\n";
-
-//     std :: cout << (db->databaseSize() == 3) << "\n";
-//     std :: cout << (db->doesExist("SBIN2390298_1212399209")) << "\n";
-//     std :: cout << (db->doesExist("SBIN2390298_1212399609")) << "\n";
-
-//     // assert(db->databaseSize() == 3);
-
-//     // assert(db->doesExist("Alice"));
-//     // assert(!db->doesExist("Eve"));
-
-//     std :: cout << (db->deleteAccount("SBIN2390298_1212399209")) << "\n";
-//     std :: cout << (db->deleteAccount("SBIN2390298_1212399609")) << "\n";
-//     std::cout << db->databaseSize() << "\n";
-// }

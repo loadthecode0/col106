@@ -21,6 +21,8 @@ private:
     
     // Other data members and functions specific to Chaining
     int dbsize = 0;
+    void swapElts(int* a, int* b);
+    void quickSort(std::vector<int> &v, int start, int end);
 };
 
 #endif // CHAINING_H

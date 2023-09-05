@@ -22,7 +22,8 @@ private:
     // Other data members and functions specific to Your implementation
     int dbsize = 0;
     uint32_t hashF(std::string id, int seed);
-
+    void swapElts(int* a, int* b);
+    void quickSort(std::vector<int> &v, int start, int end);
 };
 
 #endif // COMP_H

@@ -2,7 +2,7 @@
 #define hashPrime 130003
 
 Comp :: Comp () { //constructor
-    bankStorage2d.resize(130003, {}); //initialize vector of 130003 empty buckets
+    bankStorage2d.resize(hashPrime, {}); //initialize vector of hashPrime empty buckets
 }
 
 void Comp::createAccount(std::string id, int count) {
@@ -13,14 +13,14 @@ void Comp::createAccount(std::string id, int count) {
     dbsize++;
 }
 
-void swapElts(int* a, int* b)
+void Comp::swapElts(int* a, int* b)
 {
     int temp = *a;
     *a = *b;
     *b = temp;
 }
 
-void quickSort(std::vector<int> &v, int start, int end) {
+void Comp::quickSort(std::vector<int> &v, int start, int end) {
     if (start < end) {
         int n = end - start + 1;
         int pivotIndex = ((rand()) % (end - start + 1)) + start;
@@ -59,7 +59,7 @@ std::vector<int> Comp::getTopK(int k) {
     std::vector<int> topK;
 
     //iterate over all accounts to push in allBalances;
-    for (int i = 0; i < 130003; i++) {
+    for (int i = 0; i < hashPrime; i++) {
         for (Account a : bankStorage2d[i]) {
             allBalances.push_back(a.balance);
         }
