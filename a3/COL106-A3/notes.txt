@@ -1,13 +1,13 @@
 1. implement resizing in chaining -     NO NEED AS SAID BY INSTRUCTOR
 2. implement resizing in probing (see what is recommended first tho) - NO NEED
-3. format code to look nicer.
-4. marking deletion concept is important for lookups!!!
-5. test out probing methods.
-6. For getTopK, don't push all values! Push only those which are available[.] = 0 slots!!
+3. format code to look nicer. --done
+4. marking deletion concept is important for lookups!!! --done
+5. test out probing methods. --done
+6. For getTopK, don't push all values! Push only those which are available[.] = 0 slots!! --done
 
 !!need to debug getTopK in Probing  ---- done
 7. change appropriate variables to long long in quadratic probing
-8. put sort function in other file.
+8. put sort function in other file. --DON'T
 9. linked list in comp part.
 10. change variable names in murmur hash adaptation.
 
