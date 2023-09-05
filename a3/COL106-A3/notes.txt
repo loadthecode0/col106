@@ -5,7 +5,11 @@
 5. test out probing methods.
 6. For getTopK, don't push all values! Push only those which are available[.] = 0 slots!!
 
-!!need to debug getTopK in Probing 
+!!need to debug getTopK in Probing  ---- done
+7. change appropriate variables to long long in quadratic probing
+8. put sort function in other file.
+9. linked list in comp part.
+10. change variable names in murmur hash adaptation.
 
 -- check finder function in LinearProbing
 

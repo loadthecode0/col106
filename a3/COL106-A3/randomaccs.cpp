@@ -9,7 +9,7 @@ using namespace std;
 int collisions;
 
 LinearProbing::LinearProbing() {
-    bankStorage1d.resize(130003); //initialize vector of 130003 empty Accounts, each with id = "". (I checked it in scratch)
+    bankStorage1d.resize(200023); //initialize vector of 200023 empty Accounts, each with id = "". (I checked it in scratch)
 }
 
 int LinearProbing::newKeyProbingResult (std::string &id) { //returns index after probing, hashCode is already modulo size
@@ -18,7 +18,7 @@ int LinearProbing::newKeyProbingResult (std::string &id) { //returns index after
         collisions++;
     }
     while (available[currPosition] == 0) { //occupied slot
-        currPosition = (currPosition + 1) % 130003;
+        currPosition = (currPosition + 1) % 200023;
     }
     return currPosition;
 }
@@ -76,7 +76,7 @@ std::vector<int> LinearProbing::getTopK(int k) {
     std::vector<int> topK;
 
     //iterate over all accounts to push in allBalances;
-    for (int i = 0; i < 130003; i++) {
+    for (int i = 0; i < 200023; i++) {
         if (available[i] == 0) { //FILLED slots
             allBalances.push_back(bankStorage1d[i].balance);
         }
@@ -98,7 +98,7 @@ int LinearProbing::indexFinder (std::string &id) { //returns index at which key 
         return -1;
     } else {
         while (available[currPosition] == 0 && bankStorage1d[currPosition].id != id) { //filled slots with wrong id
-            currPosition = (currPosition + 1) % 130003; //probe and check
+            currPosition = (currPosition + 1) % 200023; //probe and check
             if (available[currPosition] == 0 && bankStorage1d[currPosition].id == id) { //filled and id matches
                 return currPosition;
             }
@@ -159,12 +159,120 @@ int LinearProbing::horner(const std::string& id, int x, int startInd, int endInd
     return output;
 }
 
-int LinearProbing::hash(std::string id) {
-    int a = horner (id, 3, 0, 3);
-    int b = horner (id, 3, 4, 10); 
-    int c = horner (id, 5 , 12, 21);
-    return (a+b+c) % 130003;
+int LinearProbing::hash(string id) {
+    uint32_t c1 = 0xcc9e2d51;
+    // printf("%d %x\n \n", c1, c1);
+    uint32_t c2 = 0x1b873593;
+    int r1 = 15;
+    int r2 = 13;
+    int m = 5;
+    uint32_t n = 0xe6546b64;
+
+    vector<uint32_t> block(6,0);
+    uint32_t hash = 0;
+
+    block[0] = (int)id[0];
+    // printf("%d %x %d\n", (int)id[0], block[0], block[0]);
+    for (int i = 1; i < 4; i++) {
+        block[0] = block[0] << 8;
+        block[0] = block[0] + (int)id[i];        
+        // printf("%d %x %d\n", (int)id[i], block[0], block[0]);        
+    }
+
+    // cout << "\n";
+
+    block[1] = (int)id[4];
+    // printf("%d %x %d\n", (int)id[4], block[1], block[1]);
+    for (int i = 5; i < 8; i++) {
+        block[1] = block[1] << 8;
+        block[1] = block[1] + (int)id[i];        
+        // printf("%d %x %d\n", (int)id[i], block[1], block[1]);       
+    }
+
+    // cout << "\n";
+
+    block[2] = (int)id[8];
+    // printf("%d %x %d\n", (int)id[8], block[2], block[2]);
+    for (int i = 9; i < 11; i++) {
+        block[2] = block[2] << 8;
+        block[2] = block[2] + (int)id[i];    
+        // printf("%d %x %d\n", (int)id[i], block[2], block[2]);    
+    }
+
+    // cout << "\n";
+
+    block[3] = (int)id[12];
+    // printf("%d %x %d\n", (int)id[12], block[3], block[3]);
+    for (int i = 13; i < 16; i++) {
+        block[3] = block[3] << 8;
+        block[3] = block[3] + (int)id[i];
+        // printf("%d %x %d\n", (int)id[i], block[3], block[3]);     
+    }
+
+    // cout << "\n";
+
+    block[4] = (int)id[16];
+    // printf("%d %x %d\n", (int)id[16], block[4], block[4]);
+    for (int i = 17; i < 20; i++) {
+        block[4] = block[4] << 8;
+        block[4] = block[4] + (int)id[i];
+        // printf("%d %x %d\n", (int)id[i], block[4], block[4]);        
+    }
+
+    // cout << "\n";
+
+    block[5] = (int)id[20];
+    // printf("%d %x %d\n", (int)id[20], block[5], block[5]);
+    for (int i = 21; i < 22; i++) {
+        block[5] = block[5] << 8;
+        block[5] = block[5] + (int)id[i];
+        // printf("%d %x %d\n", (int)id[i], block[5], block[5]);       
+    }
+
+    // cout << "\n";
+
+    uint32_t s = block[0] * c1; //takes only most significant 32 bits of multiplication result.
+    // printf("%x %d\n", s, s);
+    // printf("%x \n", (s << r1));
+    // printf("%x \n", (s >> (32 - r1)));
+    
+    s = (s << r1) | (s >> (32 - r1));
+    // printf("%x %d\n", s, s);
+    // cout << "\n";
+    
+    
+    for (int i = 0; i < 6; i++) {
+        uint64_t s = block[i]; 
+        s *= c1;
+        s = (s << r1) | (s >> (32 - r1));
+        s *= c2; //fine till here.
+        
+        hash = hash ^ block[i];
+        hash = (hash << r2) | (hash >> (32 - r2));
+        hash = (hash * m) + n;
+        // printf("%x %d\n", hash, hash);
+    }
+    // cout << "\n";
+    
+
+    //final mixing
+    hash ^= 23; //ensures final bytes are well-incorporated?
+    // printf("%x %d\n", hash, hash);
+	hash ^= hash >> 16;
+    // printf("%x %d\n", hash, hash);
+	hash *= 0x85ebca6b;
+    // printf("%x %d\n", hash, hash);
+	hash ^= hash >> 13;
+    // printf("%x %d\n", hash, hash);
+	hash *= 0xc2b2ae35;
+    // printf("%x %d\n", hash, hash);
+	hash ^= hash >> 16;
+    int finalHash = hash % 200033;
+    // printf("%x %d\n", hash, hash);
+    // cout << hash << "\n";
+    return finalHash;
 }
+
 
 string randomId() {
     string id = "";
@@ -216,7 +324,7 @@ int main() {
     int k = 0;
     for (int i = 0; i<5000; i++) {
         try {
-            int c = db->deleteAccount(v[rand()%130003]);
+            int c = db->deleteAccount(v[rand()%200023]);
             if (c == 0) {
                 k++;
             }
@@ -227,7 +335,7 @@ int main() {
 
     for (int i = 0; i<5000; i++) {
         try {
-            int c = db->doesExist(v[rand()%130003]);
+            int c = db->doesExist(v[rand()%200023]);
         } catch (runtime_error) {
             throw "exception";
         }

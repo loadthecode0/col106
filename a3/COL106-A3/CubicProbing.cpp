@@ -1,16 +1,21 @@
 #include "CubicProbing.h"
+#define hashPrime 200023
 
 //note: for an account to be validly existing, it should have a nonempty id AND available[.] = 0
 
 CubicProbing::CubicProbing() {
-    bankStorage1d.resize(130003); //initialize vector of 130003 empty Accounts, each with id = "". (I checked it in scratch)
+    bankStorage1d.resize(hashPrime); //initialize vector of hashPrime empty Accounts, each with id = "". (I checked it in scratch)
+    available.resize(hashPrime, 1);
+    dbsize = 0;
 }
 
 int CubicProbing::newKeyProbingResult (std::string &id) { //returns index after probing, hashCode is already modulo size
-    int currPosition = hash(id);
+    int hashCode = hash(id);
+    long long currPosition = hashCode;
     int iterations = 0;
     while (available[currPosition] == 0) { //occupied slot
-        currPosition = (currPosition + iterations*iterations*iterations) % 130003;
+        long long k = iterations;
+        currPosition = (hashCode + k*k*k) % hashPrime;
         iterations++;
     } //probes till empty slot is found
     return currPosition;
@@ -69,7 +74,7 @@ std::vector<int> CubicProbing::getTopK(int k) {
     std::vector<int> topK;
 
     //iterate over all accounts to push in allBalances;
-    for (int i = 0; i < 130003; i++) {
+    for (int i = 0; i < hashPrime; i++) {
         if (available[i] == 0) { //FILLED slots
             allBalances.push_back(bankStorage1d[i].balance);
         }
@@ -84,7 +89,8 @@ std::vector<int> CubicProbing::getTopK(int k) {
 }
 
 int CubicProbing::indexFinder (std::string &id) { //returns index at which key is present, -1 if not present.
-    int currPosition = hash(id);    
+    int hashCode = hash(id);
+    long long currPosition = hashCode;  
     if (available[currPosition] == 0 && bankStorage1d[currPosition].id == id) { //filled and id matches
         return currPosition;
     } else if (available[currPosition] == 1) { //empty (marked)
@@ -92,7 +98,8 @@ int CubicProbing::indexFinder (std::string &id) { //returns index at which key i
     } else {
         int iterations = 0;
         while (available[currPosition] == 0 && bankStorage1d[currPosition].id != id) { //filled slots with wrong id
-            currPosition = (currPosition + iterations*iterations*iterations) % 130003;
+            long long k = iterations;
+            currPosition = (hashCode + k*k*k) % hashPrime;
             iterations++;
             if (available[currPosition] == 0 && bankStorage1d[currPosition].id == id) { //filled and id matches
                 return currPosition;
@@ -157,7 +164,7 @@ int CubicProbing::hash(std::string id) {
     int a = horner (id, 3, 0, 3);
     int b = horner (id, 3, 4, 10); 
     int c = horner (id, 5, 12, 21);
-    return (a+b+c) % 130003;
+    return (a+b+c) % hashPrime;
 }
 
 // int main() {

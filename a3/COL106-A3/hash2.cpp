@@ -1,10 +1,48 @@
 #include <bits/stdc++.h>
 using namespace std;
-#include "BaseClass.h"
 
-#define hashPrime 200023
+#define INT_BITS 8
 
-uint32_t hashF(string id, int seed) {
+// unsigned leftRotate(unsigned n, unsigned int d)
+// {
+    
+//     /* In n<<d, last d bits are 0. To
+//     put first 3 bits of n at
+//     last, do bitwise or of n<<d
+//     with n >>(INT_BITS - d) */
+//     return (n << d)|(n >> (INT_BITS - d));
+// }
+
+// /*Function to right rotate n by d bits*/
+// unsigned rightRotate(unsigned n, unsigned int d)
+// {
+//     /* In n>>d, first d bits are 0.
+//     To put last 3 bits of at
+//     first, do bitwise or of n>>d
+//     with n <<(INT_BITS - d) */
+//     return (n >> d)|(n << (INT_BITS - d));
+// }
+
+
+long long binary(int num) {
+
+
+
+    long long bin = 0;
+    int rem = 0;
+    long long q = 0;
+    int iterations = 0;
+    long long multiplier = 1;
+    while (num > 0) {
+        rem = num % 2;
+        bin = bin + rem * (multiplier);
+        multiplier*= 10;
+        num = num/2;
+    }
+    return bin;
+}
+
+uint32_t hashF(string id) {
     uint32_t c1 = 0xcc9e2d51;
     // printf("%d %x\n \n", c1, c1);
     uint32_t c2 = 0x1b873593;
@@ -14,7 +52,7 @@ uint32_t hashF(string id, int seed) {
     uint32_t n = 0xe6546b64;
 
     vector<uint32_t> block(6,0);
-    uint32_t hash = (uint32_t)seed;
+    uint32_t hash = 0;
 
     block[0] = (int)id[0];
     // printf("%d %x %d\n", (int)id[0], block[0], block[0]);
@@ -112,10 +150,10 @@ uint32_t hashF(string id, int seed) {
 	hash *= 0xc2b2ae35;
     // printf("%x %d\n", hash, hash);
 	hash ^= hash >> 16;
-    int finalHash = hash % 200033;
+    hash = hash % 200033;
     // printf("%x %d\n", hash, hash);
     // cout << hash << "\n";
-    return finalHash;
+    return hash;
 }
 
 string randomId() {
@@ -138,29 +176,28 @@ string randomId() {
     return id;
 }
 
-int main() {
+int main()
+{
+    
 
-    vector<bool> visited(hashPrime, 0);
+    vector<bool> occurred(200033, 0);
     srand(time(0));
     // cout << occurred.size();
     int collisions = 0;
-    int nVisited = 0;
 
-    for (int i = 0; i < 310000; i++) {
+    for (int i = 0; i < 100000; i++) {
         string* myId = new string;
         *myId = randomId();
         // cout << *myId << "\n";
-        int hashCode = hashF(*myId, 0);
-        if (visited[hashCode] == 0) {
-            visited[hashCode] = 1;
-            nVisited++;
-        }         
+        int hashCode = hashF(*myId);
+        if (occurred[hashCode] == 0) {
+            occurred[hashCode] = 1;
+        } else {
+            collisions++;
+        }
         delete myId;
     }
+    cout << collisions;
 
-    cout << nVisited;
-
-        
-
-return 0;
+    return 0;
 }

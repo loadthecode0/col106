@@ -1,8 +1,25 @@
 #include <bits/stdc++.h>
 using namespace std;
-#include "BaseClass.h"
 
 #define hashPrime 200023
+
+#define INT_BITS 8
+
+int horner(const std::string& id, int x, int startInd, int endInd) {
+    int output = int(id[endInd]); // Initialize output
+    // Evaluate value of polynomial using Horner's method
+    for (int i=endInd-1; i>=startInd; i--) {
+        output = output*x + int(id[i]); //note: casting a numerical char to int gives a value shifted by 48
+    } //polynomial this way so that later digits become more impactful
+    return output;
+}
+
+int hash1(std::string id) {
+    int a = horner (id, 3, 0, 3);
+    int b = horner (id, 3, 4, 10); 
+    int c = horner (id, 5, 12, 21);
+    return (a+b+c) % hashPrime;
+}
 
 uint32_t hashF(string id, int seed) {
     uint32_t c1 = 0xcc9e2d51;
@@ -110,7 +127,7 @@ uint32_t hashF(string id, int seed) {
 	hash ^= hash >> 13;
     // printf("%x %d\n", hash, hash);
 	hash *= 0xc2b2ae35;
-    // printf("%x %d\n", hash, hash);
+    printf("%x %d\n", hash, hash);
 	hash ^= hash >> 16;
     int finalHash = hash % 200033;
     // printf("%x %d\n", hash, hash);
@@ -138,29 +155,34 @@ string randomId() {
     return id;
 }
 
-int main() {
+int main()
+{
+    
 
+    vector<bool> occurred(hashPrime, 0);
     vector<bool> visited(hashPrime, 0);
     srand(time(0));
     // cout << occurred.size();
     int collisions = 0;
+    int nZero = 0;
     int nVisited = 0;
 
-    for (int i = 0; i < 310000; i++) {
+    for (int i = 0; i < 100000; i++) {
         string* myId = new string;
         *myId = randomId();
         // cout << *myId << "\n";
-        int hashCode = hashF(*myId, 0);
-        if (visited[hashCode] == 0) {
-            visited[hashCode] = 1;
-            nVisited++;
-        }         
+        int hashCode = hashF(*myId, hash1(*myId));
+        if (hashCode == 0) {nZero++;};
+        if (occurred[hashCode] == 0) {
+            occurred[hashCode] = 1;
+        } else {
+            collisions++;
+        }
+        
         delete myId;
     }
+    cout << nZero << "\n";
+    cout << collisions;
 
-    cout << nVisited;
-
-        
-
-return 0;
+    return 0;
 }

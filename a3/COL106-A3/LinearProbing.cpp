@@ -1,23 +1,30 @@
 #include "LinearProbing.h"
+#define hashPrime 200023
 
 //note: for an account to be validly existing, it should have a nonempty id AND available[.] = 0
 
 LinearProbing::LinearProbing() {
-    bankStorage1d.resize(130003); //initialize vector of 130003 empty Accounts, each with id = "". (I checked it in scratch)
+    bankStorage1d.resize(hashPrime); //initialize vector of hashPrime empty Accounts, each with id = "". (I checked it in scratch)
+    available.resize(hashPrime, 1);
+    dbsize = 0;
 }
 
 int LinearProbing::newKeyProbingResult (std::string &id) { //returns index after probing, hashCode is already modulo size
-    int currPosition = hash(id);
+    int hashCode = hash(id);
+    int currPosition = hashCode;
+    int iterations = 0;
     while (available[currPosition] == 0) { //occupied slot
-        currPosition = (currPosition + 1) % 130003;
-    }
+        int k = iterations % hashPrime;
+        currPosition = (hashCode + k) % hashPrime;
+        iterations++;
+    } //probes till empty slot is found
     return currPosition;
 }
 
 void LinearProbing::createAccount(std::string id, int count) {
     int index = newKeyProbingResult(id);
     bankStorage1d[index] = Account {id, count};
-    available[index] = 0; //mark as occupied
+    available[index] = 0;
     dbsize++;
 }
 
@@ -67,7 +74,7 @@ std::vector<int> LinearProbing::getTopK(int k) {
     std::vector<int> topK;
 
     //iterate over all accounts to push in allBalances;
-    for (int i = 0; i < 130003; i++) {
+    for (int i = 0; i < hashPrime; i++) {
         if (available[i] == 0) { //FILLED slots
             allBalances.push_back(bankStorage1d[i].balance);
         }
@@ -82,14 +89,18 @@ std::vector<int> LinearProbing::getTopK(int k) {
 }
 
 int LinearProbing::indexFinder (std::string &id) { //returns index at which key is present, -1 if not present.
-    int currPosition = hash(id);
+    int hashCode = hash(id);
+    long long currPosition = hashCode;  
     if (available[currPosition] == 0 && bankStorage1d[currPosition].id == id) { //filled and id matches
         return currPosition;
     } else if (available[currPosition] == 1) { //empty (marked)
         return -1;
     } else {
+        int iterations = 0;
         while (available[currPosition] == 0 && bankStorage1d[currPosition].id != id) { //filled slots with wrong id
-            currPosition = (currPosition + 1) % 130003; //probe and check
+            int k = iterations;
+            currPosition = (hashCode + k) % hashPrime;
+            iterations++;
             if (available[currPosition] == 0 && bankStorage1d[currPosition].id == id) { //filled and id matches
                 return currPosition;
             }
@@ -108,7 +119,6 @@ int LinearProbing::getBalance(std::string id) {
     } else {
         return -1;
     }
-    return -1;  //default return value
 }
 
 void LinearProbing::addTransaction(std::string id, int count) {
@@ -154,117 +164,57 @@ int LinearProbing::hash(std::string id) {
     int a = horner (id, 3, 0, 3);
     int b = horner (id, 3, 4, 10); 
     int c = horner (id, 5, 12, 21);
-    return (a+b+c) % 130003;
+    return (a+b+c) % hashPrime;
 }
 
 // int main() {
 //     LinearProbing *db = new LinearProbing;
 
-//     std::cout << db->databaseSize() << "\n"; //0
-//     // db->createAccount("SBIN2390298_1212399209", 1000);
-//     // db->createAccount("SBIN8237462_1212384829", 1500);
-//     // db->createAccount("SBIN25546182_5121789421", 2000);
-//     db->createAccount("CDAD7786825_7990768648", 648);
-//     db->createAccount("DCDA7547234_9919615552", 552);
-//     db->createAccount("AACB1850545_7974534788", 788);
+//     std::cout << db->databaseSize() << "\n";
+//     db->createAccount("SBIN2390298_1212399209", 1000);
+//     db->createAccount("SBIN827462_1212384829", 1500);
+//     db->createAccount("SBIN2546182_5121789421", 2000);
 
-//     std::cout << db->databaseSize() << "\n"; //3
+//     std::cout << db->databaseSize() << "\n";
 
-//     // std::cout << db->getBalance("SBIN2390298_1212399209") << "\n";
-//     // std::cout << db->getBalance("SBIN8237462_1212384829") << "\n";
-//     // std::cout << db->getBalance("SBIN25546182_5121789421")<< "\n";
-//     std::cout << db->getBalance("CDAD7786825_7990768648")<< "\n";
-//     std::cout << db->getBalance("DCDA7547234_9919615552")<< "\n";
-//     std::cout << db->getBalance("AACB1850545_7974534788")<< "\n";
+//     std::cout << db->getBalance("SBIN2390298_1212399209") << "\n";
+//     std::cout << db->getBalance("SBIN827462_1212384829") << "\n";
+//     std::cout << db->getBalance("SBIN2546182_5121789421")<< "\n";
 
-//     db->createAccount("CDBD5250777_1124276711", 711);
-//     db->createAccount("ABCB8377155_0656808575", 575);
-//     std::cout << db->databaseSize() << "\n"; //5
-//     std::vector<int> topBalances = db->getTopK(1);
+//     std::cout << db->databaseSize() << "\n";
+
+//     db->addTransaction("SBIN2390298_1212399209", -200);
+//     db->addTransaction("SBIN827462_1212384829", 300);
+//     db->addTransaction("SBIN2546182_5121789421", -400);
+
+//     std::cout << db->databaseSize() << "\n";
+
+//     // assert(db->getBalance("Alice") == 800);
+//     // assert(db->getBalance("Bob") == 1800);
+//     // assert(db->getBalance("Charlie") == 1600);
+//     std::cout << db->getBalance("SBIN2390298_1212399209") << "\n";
+//     std::cout << db->getBalance("SBIN827462_1212384829") << "\n";
+//     std::cout << db->getBalance("SBIN2546182_5121789421")<< "\n";
+
+//     std::vector<int> topBalances = db->getTopK(2);
 //     for (int x : topBalances) {
 //         std::cout << x << " ";
-//     } 
-//     std :: cout << " \n"; //788
-
-//     db->createAccount("CDDC3792028_3313680038", 38);
-//     db->createAccount("CBBA9574444_7470182321", 321);
-//     db->createAccount("DBCC4334636_8057544188", 188);
-
-//     std::vector<int> topBalances2 = db->getTopK(3);
-//     for (int x : topBalances2) {
-//         std::cout << x << " ";
 //     }
-//     std :: cout << " \n"; //788 711 648
+//     std :: cout << " \n";
+//     std::cout << (topBalances.size() == 2) << "\n";
+//     std :: cout << (topBalances[0] == 1800) << "\n";
+//     std :: cout << (topBalances[1] == 1600) << "\n";
 
-//     db->createAccount("BABD5741078_5109455304", 304);
-//     db->createAccount("BCBA7529510_0817878868", 868);
-//     std::cout << db->databaseSize() << "\n"; //10
-//     std::vector<int> topBalances3 = db->getTopK(1);
-//     for (int x : topBalances3) {
-//         std::cout << x << " ";
-//     }
-//     std :: cout << " \n"; //868
+//     std :: cout << (db->databaseSize() == 3) << "\n";
+//     std :: cout << (db->doesExist("SBIN2390298_1212399209")) << "\n";
+//     std :: cout << (db->doesExist("SBIN2390298_1212399609")) << "\n";
 
-//     db->addTransaction("BCBA7529510_0817878868", -860);
+//     // assert(db->databaseSize() == 3);
 
-//     std::cout << db->getBalance("BCBA7529510_0817878868")<< "\n"; //8
+//     // assert(db->doesExist("Alice"));
+//     // assert(!db->doesExist("Eve"));
 
-//     std::vector<int> topBalances6 = db->getTopK(1);
-//     for (int x : topBalances6) {
-//         std::cout << x << " ";
-//     }
-//     std :: cout << " \n"; //788
-
-//     db->addTransaction("DCDA7547234_9919615552", 592);
-//     std::vector<int> topBalances4 = db->getTopK(5);
-//     for (int x : topBalances4) {
-//         std::cout << x << " ";
-//     }
-//     std :: cout << " \n"; //1144 788 711 648 575
-
-//     std :: cout << (db->deleteAccount("DCDA7547234_9919615552")) << "\n";
-
-//     std::vector<int> topBalances5 = db->getTopK(4);
-//     for (int x : topBalances5) {
-//         std::cout << x << " ";
-//     }
-//     std :: cout << " \n"; //788 711 648 575
-
-//     std::cout << db->databaseSize() << "\n"; //9
-
-
-//     // db->addTransaction("SBIN2390298_1212399209", -200);
-//     // db->addTransaction("SBIN827462_1212384829", 300);
-//     // db->addTransaction("SBIN2546182_5121789421", -400);
-
-//     // std::cout << db->databaseSize() << "\n";
-
-//     // // assert(db->getBalance("Alice") == 800);
-//     // // assert(db->getBalance("Bob") == 1800);
-//     // // assert(db->getBalance("Charlie") == 1600);
-//     // std::cout << db->getBalance("SBIN2390298_1212399209") << "\n";
-//     // std::cout << db->getBalance("SBIN827462_1212384829") << "\n";
-//     // std::cout << db->getBalance("SBIN2546182_5121789421")<< "\n";
-
-//     // std::vector<int> topBalances = db->getTopK(2);
-//     // for (int x : topBalances) {
-//     //     std::cout << x << " ";
-//     // }
-//     // std :: cout << " \n";
-//     // std::cout << (topBalances.size() == 2) << "\n";
-//     // std :: cout << (topBalances[0] == 1800) << "\n";
-//     // std :: cout << (topBalances[1] == 1600) << "\n";
-
-//     // std :: cout << (db->databaseSize() == 3) << "\n";
-//     // std :: cout << (db->doesExist("SBIN2390298_1212399209")) << "\n";
-//     // std :: cout << (db->doesExist("SBIN2390298_1212399609")) << "\n";
-
-//     // // assert(db->databaseSize() == 3);
-
-//     // // assert(db->doesExist("Alice"));
-//     // // assert(!db->doesExist("Eve"));
-
-//     // std :: cout << (db->deleteAccount("SBIN2390298_1212399209")) << "\n";
-//     // std :: cout << (db->deleteAccount("SBIN2390298_1212399609")) << "\n";
-//     // std::cout << db->databaseSize() << "\n";
+//     std :: cout << (db->deleteAccount("SBIN2390298_1212399209")) << "\n";
+//     std :: cout << (db->deleteAccount("SBIN2390298_1212399609")) << "\n";
+//     std::cout << db->databaseSize() << "\n";
 // }
