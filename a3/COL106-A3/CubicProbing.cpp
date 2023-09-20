@@ -1,5 +1,5 @@
 #include "CubicProbing.h"
-#define hashPrime 200023
+#define hashPrime 202129
 
 //note: for an account to be validly existing, it should have a nonempty id AND available[.] = 0
 

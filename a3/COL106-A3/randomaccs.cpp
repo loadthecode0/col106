@@ -1,43 +1,43 @@
-#include "LinearProbing.h"
+#include "CubicProbing.h"
 #include <bits/stdc++.h>
-
-
 using namespace std;
+#define hashPrime 202129
 
 //note: for an account to be validly existing, it should have a nonempty id AND available[.] = 0
 
-int collisions;
-
-LinearProbing::LinearProbing() {
-    bankStorage1d.resize(200023); //initialize vector of 200023 empty Accounts, each with id = "". (I checked it in scratch)
+CubicProbing::CubicProbing() {
+    bankStorage1d.resize(hashPrime); //initialize vector of hashPrime empty Accounts, each with id = "". (I checked it in scratch)
+    available.resize(hashPrime, 1);
+    dbsize = 0;
 }
 
-int LinearProbing::newKeyProbingResult (std::string &id) { //returns index after probing, hashCode is already modulo size
-    int currPosition = hash(id);
-    if (available[currPosition] == 0) {
-        collisions++;
-    }
+int CubicProbing::newKeyProbingResult (std::string &id) { //returns index after probing, hashCode is already modulo size
+    int hashCode = hash(id);
+    long long currPosition = hashCode;
+    int iterations = 0;
     while (available[currPosition] == 0) { //occupied slot
-        currPosition = (currPosition + 1) % 200023;
-    }
+        long long k = iterations;
+        currPosition = (hashCode + k*k*k) % hashPrime;
+        iterations++;
+    } //probes till empty slot is found
     return currPosition;
 }
 
-void LinearProbing::createAccount(std::string id, int count) {
+void CubicProbing::createAccount(std::string id, int count) {
     int index = newKeyProbingResult(id);
     bankStorage1d[index] = Account {id, count};
-    available[index] = 0; //mark as occupied
+    available[index] = 0;
     dbsize++;
 }
 
-void LinearProbing::swapElts(int* a, int* b)
+void CubicProbing::swapElts(int* a, int* b)
 {
     int temp = *a;
     *a = *b;
     *b = temp;
 }
 
-void LinearProbing::quickSort(std::vector<int> &v, int start, int end) {
+void CubicProbing::quickSort(std::vector<int> &v, int start, int end) {
     if (start < end) {
         int n = end - start + 1;
         int pivotIndex = ((rand()) % (end - start + 1)) + start;
@@ -71,12 +71,12 @@ void LinearProbing::quickSort(std::vector<int> &v, int start, int end) {
     }  
 }
 
-std::vector<int> LinearProbing::getTopK(int k) {
+std::vector<int> CubicProbing::getTopK(int k) {
     std::vector<int> allBalances;
     std::vector<int> topK;
 
     //iterate over all accounts to push in allBalances;
-    for (int i = 0; i < 200023; i++) {
+    for (int i = 0; i < hashPrime; i++) {
         if (available[i] == 0) { //FILLED slots
             allBalances.push_back(bankStorage1d[i].balance);
         }
@@ -90,15 +90,19 @@ std::vector<int> LinearProbing::getTopK(int k) {
     return topK;
 }
 
-int LinearProbing::indexFinder (std::string &id) { //returns index at which key is present, -1 if not present.
-    int currPosition = hash(id);
+int CubicProbing::indexFinder (std::string &id) { //returns index at which key is present, -1 if not present.
+    int hashCode = hash(id);
+    long long currPosition = hashCode;  
     if (available[currPosition] == 0 && bankStorage1d[currPosition].id == id) { //filled and id matches
         return currPosition;
     } else if (available[currPosition] == 1) { //empty (marked)
         return -1;
     } else {
+        int iterations = 0;
         while (available[currPosition] == 0 && bankStorage1d[currPosition].id != id) { //filled slots with wrong id
-            currPosition = (currPosition + 1) % 200023; //probe and check
+            long long k = iterations;
+            currPosition = (hashCode + k*k*k) % hashPrime;
+            iterations++;
             if (available[currPosition] == 0 && bankStorage1d[currPosition].id == id) { //filled and id matches
                 return currPosition;
             }
@@ -110,17 +114,16 @@ int LinearProbing::indexFinder (std::string &id) { //returns index at which key 
     return -1; //default return value
 }
 
-int LinearProbing::getBalance(std::string id) {
+int CubicProbing::getBalance(std::string id) {
     int index = indexFinder(id);
     if (index != -1) { //acc exists
         return bankStorage1d[index].balance;
     } else {
         return -1;
     }
-    return -1;  //default return value
 }
 
-void LinearProbing::addTransaction(std::string id, int count) {
+void CubicProbing::addTransaction(std::string id, int count) {
     int index = indexFinder(id);
     if (index != -1) { //acc exists
         bankStorage1d[index].balance += count;
@@ -129,7 +132,7 @@ void LinearProbing::addTransaction(std::string id, int count) {
     }
 }
 
-bool LinearProbing::doesExist(std::string id) {
+bool CubicProbing::doesExist(std::string id) {
     if (indexFinder (id) != -1) {
         return true;
     } else {
@@ -137,7 +140,7 @@ bool LinearProbing::doesExist(std::string id) {
     }
 }
 
-bool LinearProbing::deleteAccount(std::string id) {
+bool CubicProbing::deleteAccount(std::string id) {
     int index = indexFinder(id);
     if (index != -1) { //acc exists
         available[index] = 1; //make it available for reuse
@@ -147,10 +150,10 @@ bool LinearProbing::deleteAccount(std::string id) {
         return false;
     }
 }
-int LinearProbing::databaseSize() {
+int CubicProbing::databaseSize() {
     return dbsize;
 }
-int LinearProbing::horner(const std::string& id, int x, int startInd, int endInd) {
+int CubicProbing::horner(const std::string& id, int x, int startInd, int endInd) {
     int output = int(id[endInd]); // Initialize output
     // Evaluate value of polynomial using Horner's method
     for (int i=endInd-1; i>=startInd; i--) {
@@ -159,122 +162,14 @@ int LinearProbing::horner(const std::string& id, int x, int startInd, int endInd
     return output;
 }
 
-int LinearProbing::hash(string id) {
-    uint32_t c1 = 0xcc9e2d51;
-    // printf("%d %x\n \n", c1, c1);
-    uint32_t c2 = 0x1b873593;
-    int r1 = 15;
-    int r2 = 13;
-    int m = 5;
-    uint32_t n = 0xe6546b64;
-
-    vector<uint32_t> block(6,0);
-    uint32_t hash = 0;
-
-    block[0] = (int)id[0];
-    // printf("%d %x %d\n", (int)id[0], block[0], block[0]);
-    for (int i = 1; i < 4; i++) {
-        block[0] = block[0] << 8;
-        block[0] = block[0] + (int)id[i];        
-        // printf("%d %x %d\n", (int)id[i], block[0], block[0]);        
-    }
-
-    // cout << "\n";
-
-    block[1] = (int)id[4];
-    // printf("%d %x %d\n", (int)id[4], block[1], block[1]);
-    for (int i = 5; i < 8; i++) {
-        block[1] = block[1] << 8;
-        block[1] = block[1] + (int)id[i];        
-        // printf("%d %x %d\n", (int)id[i], block[1], block[1]);       
-    }
-
-    // cout << "\n";
-
-    block[2] = (int)id[8];
-    // printf("%d %x %d\n", (int)id[8], block[2], block[2]);
-    for (int i = 9; i < 11; i++) {
-        block[2] = block[2] << 8;
-        block[2] = block[2] + (int)id[i];    
-        // printf("%d %x %d\n", (int)id[i], block[2], block[2]);    
-    }
-
-    // cout << "\n";
-
-    block[3] = (int)id[12];
-    // printf("%d %x %d\n", (int)id[12], block[3], block[3]);
-    for (int i = 13; i < 16; i++) {
-        block[3] = block[3] << 8;
-        block[3] = block[3] + (int)id[i];
-        // printf("%d %x %d\n", (int)id[i], block[3], block[3]);     
-    }
-
-    // cout << "\n";
-
-    block[4] = (int)id[16];
-    // printf("%d %x %d\n", (int)id[16], block[4], block[4]);
-    for (int i = 17; i < 20; i++) {
-        block[4] = block[4] << 8;
-        block[4] = block[4] + (int)id[i];
-        // printf("%d %x %d\n", (int)id[i], block[4], block[4]);        
-    }
-
-    // cout << "\n";
-
-    block[5] = (int)id[20];
-    // printf("%d %x %d\n", (int)id[20], block[5], block[5]);
-    for (int i = 21; i < 22; i++) {
-        block[5] = block[5] << 8;
-        block[5] = block[5] + (int)id[i];
-        // printf("%d %x %d\n", (int)id[i], block[5], block[5]);       
-    }
-
-    // cout << "\n";
-
-    uint32_t s = block[0] * c1; //takes only most significant 32 bits of multiplication result.
-    // printf("%x %d\n", s, s);
-    // printf("%x \n", (s << r1));
-    // printf("%x \n", (s >> (32 - r1)));
-    
-    s = (s << r1) | (s >> (32 - r1));
-    // printf("%x %d\n", s, s);
-    // cout << "\n";
-    
-    
-    for (int i = 0; i < 6; i++) {
-        uint64_t s = block[i]; 
-        s *= c1;
-        s = (s << r1) | (s >> (32 - r1));
-        s *= c2; //fine till here.
-        
-        hash = hash ^ block[i];
-        hash = (hash << r2) | (hash >> (32 - r2));
-        hash = (hash * m) + n;
-        // printf("%x %d\n", hash, hash);
-    }
-    // cout << "\n";
-    
-
-    //final mixing
-    hash ^= 23; //ensures final bytes are well-incorporated?
-    // printf("%x %d\n", hash, hash);
-	hash ^= hash >> 16;
-    // printf("%x %d\n", hash, hash);
-	hash *= 0x85ebca6b;
-    // printf("%x %d\n", hash, hash);
-	hash ^= hash >> 13;
-    // printf("%x %d\n", hash, hash);
-	hash *= 0xc2b2ae35;
-    // printf("%x %d\n", hash, hash);
-	hash ^= hash >> 16;
-    int finalHash = hash % 200033;
-    // printf("%x %d\n", hash, hash);
-    // cout << hash << "\n";
-    return finalHash;
+int CubicProbing::hash(std::string id) {
+    int a = horner (id, 3, 0, 3);
+    int b = horner (id, 3, 4, 10); 
+    int c = horner (id, 5, 12, 21);
+    return (a+b+c) % hashPrime;
 }
-
-
 string randomId() {
+    // srand(time(0));
     string id = "";
 
     for (int i =0; i<4; i++) {
@@ -295,7 +190,7 @@ string randomId() {
 
 int main() {
 
-    LinearProbing *db = new LinearProbing;
+    CubicProbing *db = new CubicProbing;
 
     srand(time(0));
     vector <string> v(100000);
@@ -308,7 +203,7 @@ int main() {
             db->createAccount(v[i], 0);
             // cout << db->databaseSize() << "\n";
         } catch (runtime_error) {
-            throw "exception";
+            throw runtime_error("problem");
         }
         
     }
@@ -324,7 +219,7 @@ int main() {
     int k = 0;
     for (int i = 0; i<5000; i++) {
         try {
-            int c = db->deleteAccount(v[rand()%200023]);
+            int c = db->deleteAccount(v[rand()%202129]);
             if (c == 0) {
                 k++;
             }
@@ -335,7 +230,7 @@ int main() {
 
     for (int i = 0; i<5000; i++) {
         try {
-            int c = db->doesExist(v[rand()%200023]);
+            int c = db->doesExist(v[rand()%202129]);
         } catch (runtime_error) {
             throw "exception";
         }
@@ -343,7 +238,7 @@ int main() {
     
     cout << k <<"\n";
     cout << db->databaseSize() << "\n";
-    cout << collisions << "\n";
+    // cout << collisions << "\n";
 
     
 

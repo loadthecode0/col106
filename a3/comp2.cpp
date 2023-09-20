@@ -127,12 +127,12 @@ int Comp::hash(std::string id) {
 }
 
 uint32_t Comp::hashF(std::string id, int seed) {
-    uint32_t prime1 = 0x9e3779b1; //golden ratio constant
-    uint32_t prime2 = 0x517CC1B7; //2**32 / pi integer part
-    int offset1 = 15;
-    int offset2 = 13;
-    int prime3 = 5;
-    uint32_t prime4 = 0x243430A3; //2**32 * sqrt(2) integer part
+    uint32_t c1 = 0xcc9e2d51;
+    uint32_t c2 = 0x1b873593;
+    int r1 = 15;
+    int r2 = 13;
+    int m = 5;
+    uint32_t n = 0xe6546b64;
 
     std::vector<uint32_t> block(6,0);
     uint32_t hash = (uint32_t)seed;
@@ -172,25 +172,27 @@ uint32_t Comp::hashF(std::string id, int seed) {
         block[5] = block[5] << 8;
         block[5] = block[5] + (int)id[i];     
     }
+
+    uint32_t s = block[0] * c1; //takes only most significant 32 bits of multiplication result.
+    
+    s = (s << r1) | (s >> (32 - r1)); //left rotate
     
     for (int i = 0; i < 6; i++) {
-        uint32_t s = block[i]; //takes only most significant 32 bits of multiplication result.
-    
-        s *= prime1;
-        s = (s << offset1) | (s >> (32 - offset1)); //left rotate
-        s *= prime2;
+        uint64_t s = block[i]; 
+        s *= c1;
+        s = (s << r1) | (s >> (32 - r1));
         
-        hash = hash ^ s; //xor with previous value
-        hash = (hash << offset2) | (hash >> (32 - offset2)); //left rotate
-        hash = (hash * prime3) + prime4;
+        hash = hash ^ block[i];
+        hash = (hash << r2) | (hash >> (32 - r2)); //left rotate
+        hash = (hash * m) + n;
     }   
 
-    //final mixing of bits
+    //final mixing
     hash ^= 23; //ensures final bytes are well-incorporated?
 	hash ^= hash >> 16;
-	hash *= 0x1A2C2885; //2**32 * sqrt(3) integer part till 32 bits
+	hash *= 0x85ebca6b;
 	hash ^= hash >> 13;
-	hash *= 0x5144113A; //2**32 * sqrt(7) integer part till 32 bits
+	hash *= 0xc2b2ae35;
 	hash ^= hash >> 16;
 
     return hash;

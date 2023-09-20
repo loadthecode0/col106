@@ -11,11 +11,74 @@ int horner(const std::string& id, int x, int startInd, int endInd) {
     return output;
 }
 
-int hashF(std::string id) {
-    int a = horner (id, 31, 0, 3);
-    int b = horner (id, 31, 4, 10); 
-    int c = horner (id, 31, 12, 21);
-    return (a+b+c) % 200023;
+int hashF(std::string id, int seed) {
+    uint32_t prime1 = 0x9e3779b1; //golden ratio constant
+    uint32_t prime2 = 0x517CC1B7; //2**32 / pi integer part
+    int offset1 = 15;
+    int offset2 = 13;
+    int prime3 = 5;
+    uint32_t prime4 = 0x243430A3; //2**32 * sqrt(2) integer part
+
+    std::vector<uint32_t> block(6,0);
+    uint32_t hash = (uint32_t)seed;
+
+    block[0] = (int)id[0];
+    for (int i = 1; i < 4; i++) {
+        block[0] = block[0] << 8;
+        block[0] = block[0] + (int)id[i];              
+    }
+
+    block[1] = (int)id[4];
+    for (int i = 5; i < 8; i++) {
+        block[1] = block[1] << 8;
+        block[1] = block[1] + (int)id[i];             
+    }
+
+    block[2] = (int)id[8];
+    for (int i = 9; i < 11; i++) {
+        block[2] = block[2] << 8;
+        block[2] = block[2] + (int)id[i];       
+    }
+
+    block[3] = (int)id[12];
+    for (int i = 13; i < 16; i++) {
+        block[3] = block[3] << 8;
+        block[3] = block[3] + (int)id[i];   
+    }
+
+    block[4] = (int)id[16];
+    for (int i = 17; i < 20; i++) {
+        block[4] = block[4] << 8;
+        block[4] = block[4] + (int)id[i];      
+    }
+
+    block[5] = (int)id[20];
+    for (int i = 21; i < 22; i++) {
+        block[5] = block[5] << 8;
+        block[5] = block[5] + (int)id[i];     
+    }
+    
+    for (int i = 0; i < 6; i++) {
+        uint32_t s = block[i]; //takes only most significant 32 bits of multiplication result.
+    
+        s *= prime1;
+        s = (s << offset1) | (s >> (32 - offset1)); //left rotate
+        s *= prime2;
+        
+        hash = hash ^ s; //xor with previous value
+        hash = (hash << offset2) | (hash >> (32 - offset2)); //left rotate
+        hash = (hash * prime3) + prime4;
+    }   
+
+    //final mixing of bits
+    hash ^= 23; //ensures final bytes are well-incorporated?
+	hash ^= hash >> 16;
+	hash *= 0x1A2C2885; //2**32 * sqrt(3) integer part till 32 bits
+	hash ^= hash >> 13;
+	hash *= 0x5144113A; //2**32 * sqrt(7) integer part till 32 bits
+	hash ^= hash >> 16;
+
+    return hash%202109;
 }
 
 string randomId() {
@@ -42,7 +105,7 @@ int main()
 {
     
 
-    vector<bool> occurred(200023, 0);
+    vector<bool> occurred(202109, 0);
     srand(time(0));
     // cout << occurred.size();
     int collisions = 0;
@@ -51,7 +114,7 @@ int main()
         string* myId = new string;
         *myId = randomId();
         // cout << *myId << "\n";
-        int hashCode = hashF(*myId);
+        int hashCode = hashF(*myId, 202109);
         if (occurred[hashCode] == 0) {
             occurred[hashCode] = 1;
         } else {
@@ -64,4 +127,4 @@ int main()
     return 0;
 }
 
-//current: about 21% for 1L inputs
+//current: about v close to 21% for 1L inputs
