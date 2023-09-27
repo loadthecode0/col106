@@ -1,0 +1,2 @@
+delete extra headers from .cpp files.
+remove all hellos.

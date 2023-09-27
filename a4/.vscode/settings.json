@@ -1,0 +1,11 @@
+{
+    "cSpell.words": [
+        "EXPLICTLY",
+        "ulimitedint"
+    ],
+    "files.associations": {
+        "iostream": "cpp",
+        "new": "cpp",
+        "*.tcc": "cpp"
+    }
+}
