@@ -1,6 +1,7 @@
 #include <string>
 #include<iostream>
 using namespace std;
+#include <cmath>
 
 void f1() {
     string i1 = "12345678";
@@ -187,8 +188,8 @@ void f2 () {
 }
 
 void f3 () {
-
-    cout << (-57834582)%22;
+    float x = -213681; float y = 4;
+    cout << floor(x/y) << " " << ((int) x ) % ((int(y)));
 }
 
 int main()
