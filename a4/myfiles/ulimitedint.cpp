@@ -176,8 +176,45 @@ string addMagnitude (int* arr1, int* arr2, int sz1, int sz2) { //tested, works
     return s;
 }
 
+string addMagnitudeString (const string &s1, const string &s2) { //tested, works
+    int sz1 = s1.length(); int sz2 = s2.length();
+    string s = "";
+    int t = 0;
+    int carry = 0;
+    int index = 0; 
+    int bigSize; int smallSize;
+    string bigString; string smallString;
+
+    if (sz1 > sz2) {
+        bigSize = sz1; smallSize = sz2;
+        bigString = s1; smallString = s2;
+    } else {
+        bigSize = sz2; smallSize = sz1;
+        bigString = s2; smallString = s1;
+    }
+
+    while (index < smallSize) {
+            int t = int (bigString[bigSize - 1 - index]) + int(smallString[smallSize - 1 - index]) + carry - 96;
+            if (t > 9) {carry = 1; t -= 10;} 
+            else {carry = 0;}
+            s = char(t+48) + s;
+            index++; 
+        } //now index = smallSize; carry may be 0 or 1
+        while (index < bigSize) {
+            int t = int (bigString[bigSize - 1 - index]) + carry - 48;
+            if (t > 9) {carry = 1; t -= 10;} 
+            else {carry = 0;}
+            s = char(t+48) + s;
+            index++;
+        } //now index = bigSize, add carry if left.
+        if (carry == 1) {;
+            s = '1' + s;
+        }  
+    return s;
+}
+
 string subSmallFromBig (int* arr1, int* arr2, int bigSize, int smallSize) { //tested, works
-    //condition: num(arr1) > num(arr2), so sz1 >=  sz2
+    //pre-condition: num(arr1) > num(arr2), so sz1 >=  sz2
     string s = "";
     int t = 0;
     int carry = 0; //will be -1 in case of borrow
@@ -192,6 +229,43 @@ string subSmallFromBig (int* arr1, int* arr2, int bigSize, int smallSize) { //te
     } //now index = smallSize; carry may be 0 or -1
     while (index < bigSize) {
         int t = arr1[index] + carry;
+        if (t < 0) {carry = -1; t += 10;} 
+        else {carry = 0;}
+        s = char(t+48) + s;
+        index++;
+    } //now index = bigSize, by hypothesis carry has to be 0. There will be exactly bigSize chars in s now.
+    //now delete leading zeroes
+    int j = 0; string out = "";
+
+    while (j < bigSize-1 && s[j] == '0') {
+        j++;
+    } //landed on MSD OR unit place if all zeroes.
+
+    while (j < bigSize) {
+        out = out + s[j];
+        j++;
+    }
+
+    return out;
+}
+
+string subStringSmallFromBig (const string &s1, const string &s2) { //tested, works
+    int bigSize = s1.length(); int smallSize = s2.length();
+    //pre-condition: num(s1) > num(s2), so sz1 >=  sz2
+    string s = "";
+    int t = 0;
+    int carry = 0;
+    int index = 0; 
+
+    while (index < smallSize) {
+        int t = int(s1[bigSize - 1 - index]) - int (s2[smallSize - 1 - index]) + carry;
+        if (t < 0) {carry = -1; t += 10;} 
+        else {carry = 0;}
+        s = char(t+48) + s;
+        index++; 
+    } //now index = smallSize; carry may be 0 or -1
+    while (index < bigSize) {
+        int t = int(s1[bigSize - 1 - index]) + carry -48;
         if (t < 0) {carry = -1; t += 10;} 
         else {carry = 0;}
         s = char(t+48) + s;
@@ -396,32 +470,50 @@ UnlimitedInt* UnlimitedInt::mul(UnlimitedInt* i1, UnlimitedInt* i2) {
 }
 
 UnlimitedInt* UnlimitedInt::div(UnlimitedInt* i1, UnlimitedInt* i2) {
-    UnlimitedInt* divisor = new UnlimitedInt("0");
+    
     UnlimitedInt* quotient = new UnlimitedInt("0");
     UnlimitedInt* remainder = new UnlimitedInt(i1 -> to_string());
-    UnlimitedInt* q = new UnlimitedInt("0");
+    
+    std::cout << quotient->to_string() << " " << remainder -> to_string()  << "\n"; 
 
-    while (remainder->get_size() > divisor->get_size()) {
+    int n = (remainder->get_size() - i2->get_size());
+    std::cout << n << "\n";
+
+    string newDivisor = i2 -> to_string(); string quotientAdder = "1";
+    while (n>0) {
+        newDivisor += "0";quotientAdder += "0"; n--;
+    } //we will use these strings for generating divisors and quotient counter
+
+    std::cout<<"newDivisor: "<< newDivisor<< ", quotientAdder: "<<quotientAdder<<"\n";
+
+    while (remainder->get_size() > i2->get_size()) {
 
         //generate new divisor
-        int n = (remainder->get_size() - divisor->get_size());
-        delete divisor; delete q;
-        string newDivisor = i2 -> to_string(); string quotientAdder = "1";
-        while (n>0) {
-            newDivisor += "0";quotientAdder += "0"; n--;
-        }
-        divisor = new UnlimitedInt(newDivisor);
-        q = new UnlimitedInt(quotientAdder);
+        UnlimitedInt* divisor = new UnlimitedInt(newDivisor);
+        UnlimitedInt* q = new UnlimitedInt(quotientAdder);
+
+        std::cout << remainder -> to_string() << " " << divisor -> to_string() << " " << quotient->to_string() << "\n"; 
 
         //subtract repeatedly
-        while (compareMagnitudeUnInt(remainder, divisor) != -1) { //ie until remainder is smaller
-            UnlimitedInt::sub(remainder, divisor);
-            quotient = UnlimitedInt::add(quotient, q);
-        }
+        while (compareMagnitudeUnInt(remainder, divisor) != -1) { //ie until remainder is smaller than divisor
+            UnlimitedInt* temp1 = UnlimitedInt::sub(remainder, divisor);
+            delete remainder; remainder = temp1; //replace remainder by new remainder
+
+            UnlimitedInt* temp2 = UnlimitedInt::add(quotient, q);
+            delete quotient; quotient = temp2; // replace quotient by new quotient
+            std::cout << "remainder: " <<remainder -> to_string() << ", quotient: " << quotient->to_string() << "\n";
+        } //now, remainder<=divisor
+        // delete divisor; divisor = new UnlimitedInt(i2 -> to_string());
+        //make prep for next iteration;
+        newDivisor.pop_back(); quotientAdder.pop_back();
+        delete divisor; divisor = nullptr;
+        delete q; q = nullptr;
     }
 
     return quotient;
 }
+
+
 
 string UnlimitedInt::to_string() {
     string s = "";
@@ -438,20 +530,20 @@ string UnlimitedInt::to_string() {
 
 int main() {
     // string s = "12402";
-    // cout << "hello1\n";
+    // std::cout << "hello1\n";
     // UnlimitedInt* x = new UnlimitedInt(s);
-    // cout << "hello2\n";
+    // std::cout << "hello2\n";
     // int n = x->get_size();
     // int* arr = x->get_array();
     // int cap = x->get_capacity();
-    // cout << x -> get_size() << " " << x-> get_array() << " " << x->get_sign() <<" " << x->get_capacity() << "\n";
+    // std::cout << x -> get_size() << " " << x-> get_array() << " " << x->get_sign() <<" " << x->get_capacity() << "\n";
 
     // for (int i = 0; i<cap; i++) {
-    //     cout << arr[i] << " ";
+    //     std::cout << arr[i] << " ";
     // }
-    // cout << "\n";
+    // std::cout << "\n";
 
-    // cout << x->to_string();
+    // std::cout << x->to_string();
 
     string y = "57834582";
     string z = "22";
@@ -459,16 +551,18 @@ int main() {
     UnlimitedInt* a = new UnlimitedInt(y);
     UnlimitedInt* b = new UnlimitedInt(z);
 
-    cout << a->to_string() << "\n";
-    cout << b->to_string() << " " << b->get_sign() << "\n";
+    std::cout << a->to_string() << "\n";
+    std::cout << b->to_string() << " " << b->get_sign() << "\n";
 
 
     UnlimitedInt* c = new UnlimitedInt();
 
     c = UnlimitedInt::div(a, b);
 
-    cout << c->to_string();
-    // cout << magnitude(z);
+    std::cout << c->to_string() << "\n";
+    // std::cout << magnitude(z);
+
+    cout << subStringSmallFromBig ("4323241", "29939") << "\n";
 
     return 0;
 }

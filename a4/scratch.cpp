@@ -187,8 +187,8 @@ void f2 () {
 }
 
 void f3 () {
-    int x = -3; int y = -2;
-    cout << (x/y);
+
+    cout << (-57834582)%22;
 }
 
 int main()

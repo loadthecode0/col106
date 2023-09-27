@@ -1,4 +1,1 @@
-
-    c = UnlimitedInt::sub(a, b);
-
-    cout << c->to_string();
+57834582
