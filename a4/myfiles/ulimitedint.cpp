@@ -638,7 +638,7 @@ UnlimitedInt* UnlimitedInt::mod(UnlimitedInt* i1, UnlimitedInt* i2) {
         }
         else  {
             string rem = remMagUnInt(mag1, mag2);
-            string rem2 = subStringSmallFromBig(mag2, rem)
+            string rem2 = subStringSmallFromBig(mag2->to_string(), rem);
             if (s1 > 0 && s2 > 0) {
                 return new UnlimitedInt(rem);
             } else if (s1 > 0 && s2 < 0) {
