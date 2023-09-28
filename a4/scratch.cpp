@@ -187,9 +187,135 @@ void f2 () {
 
 }
 
+string addMagnitudeString (const string &s1, const string &s2) { //tested, works
+    int sz1 = s1.length(); int sz2 = s2.length();
+    string s = "";
+    int t = 0;
+    int carry = 0;
+    int index = 0; 
+    int bigSize; int smallSize;
+    string bigString; string smallString;
+
+    if (sz1 > sz2) {
+        bigSize = sz1; smallSize = sz2;
+        bigString = s1; smallString = s2;
+    } else {
+        bigSize = sz2; smallSize = sz1;
+        bigString = s2; smallString = s1;
+    }
+
+    while (index < smallSize) {
+            int t = int (bigString[bigSize - 1 - index]) + int(smallString[smallSize - 1 - index]) + carry - 96;
+            if (t > 9) {carry = 1; t -= 10;} 
+            else {carry = 0;}
+            s = char(t+48) + s;
+            index++; 
+        } //now index = smallSize; carry may be 0 or 1
+        while (index < bigSize) {
+            int t = int (bigString[bigSize - 1 - index]) + carry - 48;
+            if (t > 9) {carry = 1; t -= 10;} 
+            else {carry = 0;}
+            s = char(t+48) + s;
+            index++;
+        } //now index = bigSize, add carry if left.
+        if (carry == 1) {;
+            s = '1' + s;
+        }  
+    return s;
+}
+
+string subStringSmallFromBig (const string &s1, const string &s2) { //tested, works
+    int bigSize = s1.length(); int smallSize = s2.length();
+    //pre-condition: num(s1) > num(s2), so sz1 >=  sz2
+    string s = "";
+    int t = 0;
+    int carry = 0;
+    int index = 0; 
+
+    while (index < smallSize) {
+        int t = int(s1[bigSize - 1 - index]) - int (s2[smallSize - 1 - index]) + carry;
+        if (t < 0) {carry = -1; t += 10;} 
+        else {carry = 0;}
+        s = char(t+48) + s;
+        index++; 
+    } //now index = smallSize; carry may be 0 or -1
+    while (index < bigSize) {
+        int t = int(s1[bigSize - 1 - index]) + carry -48;
+        if (t < 0) {carry = -1; t += 10;} 
+        else {carry = 0;}
+        s = char(t+48) + s;
+        index++;
+    } //now index = bigSize, by hypothesis carry has to be 0. There will be exactly bigSize chars in s now.
+    //now delete leading zeroes
+    int j = 0; string out = "";
+
+    while (j < bigSize-1 && s[j] == '0') {
+        j++;
+    } //landed on MSD OR unit place if all zeroes.
+
+    while (j < bigSize) {
+        out = out + s[j];
+        j++;
+    }
+
+    return out;
+}
+
+string divString(const string &s1, const string &s2) {
+    string quotient = "0";
+    string remainder = s1;
+    
+    std::cout << quotient<< " " << remainder  << "\n"; 
+
+    int n = (s1.length() - s2.length());
+    std::cout << n << "\n";
+
+    string divisor = s2; string quotientAdder = "1";
+    while (n>0) {
+        divisor += "0"; quotientAdder += "0"; n--;
+    } //we will use these strings for generating divisors and quotient counter
+
+    std::cout<<"reminder: "<<remainder<<" divisor: "<< divisor<< ", quotientAdder: "<<quotientAdder<<"\n";
+
+    // while (remainder.length() > s2.length()) {
+
+    //     std::cout << remainder << " " << divisor << " " << quotient<< "\n"; 
+
+    //     // subtract repeatedly
+    //     while (remainder > divisor || remainder == divisor) { //ie until remainder is smaller than divisor
+    //         cout << "hello\n";
+            // remainder = subStringSmallFromBig(remainder, divisor);
+            // quotient = addMagnitudeString(quotient, quotientAdder);
+            
+            // std::cout << "remainder: " <<remainder << ", quotient: " << quotient << "\n";
+    //     } //now, remainder<=divisor
+    //     //make prep for next iteration;
+        // divisor.pop_back(); quotientAdder.pop_back();
+        // std::cout<<"divisor: "<< divisor<< ", quotientAdder: "<<quotientAdder<<"\n";
+    // }
+    while (remainder > s2) {
+        while (compareMa) {
+            cout << "hello\n";
+            remainder = subStringSmallFromBig(remainder, divisor);
+            quotient = addMagnitudeString(quotient, quotientAdder);        
+            std::cout << "remainder: " <<remainder << ", quotient: " << quotient << "\n";
+        }
+        divisor.pop_back(); quotientAdder.pop_back();
+        std::cout<<"remainder: " <<remainder<<", divisor: "<< divisor<< ", quotientAdder: "<<quotientAdder<<"\n";
+    }       
+
+    return quotient;
+}
+
 void f3 () {
-    float x = -213681; float y = 4;
-    cout << floor(x/y) << " " << ((int) x ) % ((int(y)));
+    string s1 = "73461638"; string s2 = "22";
+    cout << divString(s1, s2);
+}
+
+void f4() {
+    string s = "ebguvd";
+    string y = s;
+    cout << &s << " " << &y << "\n";
 }
 
 int main()

@@ -1,2 +1,7 @@
 delete extra headers from .cpp files.
 remove all hellos.
+complete mod in unlimited_int
+
+to test: 
+g++ ulimitedint.cpp ulimitedrational.cpp -o test
+.\test
