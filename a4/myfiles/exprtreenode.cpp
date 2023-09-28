@@ -2,20 +2,34 @@
 /* unless EXPLICTLY clarified on Piazza. */
 #include "exprtreenode.h"
 
-string ExprTreeNode:: type{ // Can be "ADD", "SUB", "MUL", "DIV", "MOD" or "VAL"
-    
+ExprTreeNode::ExprTreeNode() {
+    type = ""; //dummy value
+    val = new UnlimitedRational();
+    evaluated_value = new UnlimitedRational;
+    left = nullptr;
+    right = nullptr;
 }
-ExprTreeNode::UnlimitedRational* val; 
 
-ExprTreeNode::UnlimitedRational* evaluated_value; 
+ExprTreeNode::ExprTreeNode(string t, UnlimitedInt* v) {
+    type = t;
+    val = new UnlimitedRational(v, new UnlimitedInt("1"));
+}
 
-ExprTreeNode::ExprTreeNode* left;
-ExprTreeNode::ExprTreeNode* right;
+ExprTreeNode::ExprTreeNode(string t, UnlimitedRational* v) {
+    type = t;
+    val = v;
+}
 
-ExprTreeNode::ExprTreeNode();
+//utility function for recursive deletion of full tree
+void treeDelete (ExprTreeNode* root) {
+    if (root == nullptr) {
+        return;
+    } 
+    treeDelete (root->left);
+    treeDelete (root->right);
+    delete root; 
+}
 
-ExprTreeNode::ExprTreeNode(string t, UnlimitedInt* v);
-
-ExprTreeNode::ExprTreeNode(string t, UnlimitedRational* v);
-
-ExprTreeNode::~ExprTreeNode();
+ExprTreeNode::~ExprTreeNode() {
+    treeDelete(this);
+}
