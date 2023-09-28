@@ -222,6 +222,9 @@ UnlimitedRational::UnlimitedRational(UnlimitedInt* num, UnlimitedInt* den) { //t
             p = new UnlimitedInt("-" + n);
             q = new UnlimitedInt(d);
         }
+    } else {
+        p = new UnlimitedInt("0");
+        q = new UnlimitedInt("0");
     }
 }
 
@@ -304,10 +307,10 @@ UnlimitedRational* UnlimitedRational::div(UnlimitedRational* i1, UnlimitedRation
 int main () {
     
     string x = "216";
-    string y = "7";
+    string y = "3";
 
     string z = "48";
-    string w = "-8";
+    string w = "0";
 
     UnlimitedInt *m = new UnlimitedInt(x);
     UnlimitedInt *n = new UnlimitedInt(y);
@@ -320,7 +323,7 @@ int main () {
     std::cout <<r->get_p_str() << " " << r->get_q_str() << " " << r -> get_frac_str() << "\n";
     std::cout <<s->get_p_str() << " " << s->get_q_str() << " " << s -> get_frac_str() << "\n";
     // std:: cout << s->to_string() << "\n";
-    UnlimitedRational *t = UnlimitedRational::div(r, s);
+    UnlimitedRational *t = UnlimitedRational::mul(r, s);
     cout << t->get_frac_str() << "\n";
     // std::cout << gcdMagnitude("0", "2325234") << "\n";
 

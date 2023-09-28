@@ -1,7 +1,8 @@
 delete extra headers from .cpp files.
 remove all hellos.
 complete mod in unlimited_int ---- done
-convert add, sub, mul to use strings instead of arrays 
+convert add, sub, mul to use strings instead of arrays
+think about possible double free error and missing delete statements. 
 
 
 to test: 
