@@ -1,6 +1,8 @@
 delete extra headers from .cpp files.
 remove all hellos.
-complete mod in unlimited_int
+complete mod in unlimited_int ---- done
+convert add, sub, mul to use strings instead of arrays 
+
 
 to test: 
 g++ ulimitedint.cpp ulimitedrational.cpp -o test

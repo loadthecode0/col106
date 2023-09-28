@@ -341,15 +341,15 @@ string mulMagnitude (int* arr1, int* arr2, int sz1, int sz2) { //
             else {carry = 0;}
             s = char(t+48) + s;
         }  
+        std :: cout << s << "\n";
     }
 
     if (carry > 0) {
-        s = char(t+48) + s;
+        s = char(carry+48) + s;
     }
 
     return s;
 }
-
 struct divResult
 {
     string q;
@@ -438,60 +438,49 @@ UnlimitedInt* UnlimitedInt::add(UnlimitedInt* i1, UnlimitedInt* i2) {
 
 UnlimitedInt* UnlimitedInt::sub(UnlimitedInt* i1, UnlimitedInt* i2) {
     int s1 = i1 -> get_sign(); int s2 = i2 -> get_sign();
+    string mag1 = magnitude(i1->to_string());
+    string mag2 = magnitude(i2->to_string());
 
     if (s2 == 0) {
-        UnlimitedInt* x = new UnlimitedInt(i1 -> to_string());
-        return x; //works if both s1 s2 are zero too
-    } else if (s1 == 0) {
+        return new UnlimitedInt(i1 -> to_string());; //works if both s1 s2 are zero too
+    } else if (s1 == 0) { //s1 == 0 and s2 != 0
         if (s2 > 0) {
-            UnlimitedInt* x = new UnlimitedInt("-" + magnitude(i2 -> to_string()));
-            return x;
+            return new UnlimitedInt("-" + mag2);;
         } else {
-            UnlimitedInt* x = new UnlimitedInt(magnitude(i2 -> to_string()));
-            return x;
+            return new UnlimitedInt(mag2);
         }
-        
+        //now, none of s1, s2 can be "0"
+
     } else if (s1 * s2 < 0) { //nonzero, opposite signs
 
-        int* arr1 = i1 -> get_array(); int* arr2 = i2 -> get_array();
-        int sz1 = i1 -> get_size(); int sz2 = i2 -> get_size();
-        string magnitude = addMagnitude(arr1, arr2, sz1, sz2);
+        string magnitude = addMagnitudeString(mag1, mag2);
 
-        if (s1 < 0) {
-            UnlimitedInt* x = new UnlimitedInt("-" + magnitude);
-            return x;
+        if (s1 < 0) { //and s2>0
+            return new UnlimitedInt("-" + magnitude);
         } else {
-            UnlimitedInt* x = new UnlimitedInt(magnitude);
-            return x;
+            return new UnlimitedInt(magnitude);
         }            
         
     } else { //nonzero, same sign
         
-        int* arr1 = i1 -> get_array(); int* arr2 = i2 -> get_array();
-        int sz1 = i1 -> get_size(); int sz2 = i2 -> get_size();
-        int comp = compareMagnitude(arr1, arr2, sz1, sz2);
+        int comp = compareMagnitudeString(mag1, mag2);
 
         if (comp == 1) { //|i1| > |i2|
-            string magnitude = subSmallFromBig(arr1, arr2, sz1, sz2);
-            if (s1 < 0) {
-                UnlimitedInt* x = new UnlimitedInt("-" + magnitude); 
-                return x; 
-            } else {
-                UnlimitedInt* x = new UnlimitedInt(magnitude); 
-                return x; 
+            string magnitude = subStringSmallFromBig(mag1, mag2);
+            if (s1 < 0) { //and s2<0
+                return new UnlimitedInt("-" + magnitude); 
+            } else { //s1, s2 > 0
+                return new UnlimitedInt("-" + magnitude); 
             }         
-        } else if (comp == -1) { //|i1| > |i2|
-            string magnitude = subSmallFromBig(arr2, arr1, sz2, sz1);
+        } else if (comp == -1) { //|i1| < |i2|
+            string magnitude = subStringSmallFromBig(mag2, mag1);
             if (s2 < 0) {
-                UnlimitedInt* x = new UnlimitedInt("-" + magnitude); 
-                return x; 
+                return new UnlimitedInt(magnitude); 
             } else {
-                UnlimitedInt* x = new UnlimitedInt(magnitude); 
-                return x; 
+                return new UnlimitedInt("-" + magnitude); 
             } 
         } else { //comp == 0, equal.
-            UnlimitedInt* x = new UnlimitedInt("0"); 
-            return x;
+            return new UnlimitedInt("0");
         }
     } 
 }
@@ -522,92 +511,6 @@ UnlimitedInt* UnlimitedInt::mul(UnlimitedInt* i1, UnlimitedInt* i2) {
         } 
     }
 }
-
-// string divMagUnInt(UnlimitedInt* i1, UnlimitedInt* i2) {//not needed now    
-//     UnlimitedInt* quotient = new UnlimitedInt("0");
-//     UnlimitedInt* remainder = new UnlimitedInt(i1 -> to_string());
-    
-//     std::cout << quotient->to_string() << " " << remainder -> to_string()  << "\n"; 
-
-//     int n = (remainder->get_size() - i2->get_size());
-//     std::cout << n << "\n";
-
-//     string newDivisor = i2 -> to_string(); string quotientAdder = "1";
-//     while (n>0) {
-//         newDivisor += "0";quotientAdder += "0"; n--;
-//     } //we will use these strings for generating divisors and quotient counter
-
-//     std::cout<<"newDivisor: "<< newDivisor<< ", quotientAdder: "<<quotientAdder<<"\n";
-
-//     while (remainder->get_size() > i2->get_size()) {
-
-//         //generate new divisor
-//         UnlimitedInt* divisor = new UnlimitedInt(newDivisor);
-//         UnlimitedInt* q = new UnlimitedInt(quotientAdder);
-
-//         std::cout << remainder -> to_string() << " " << divisor -> to_string() << " " << quotient->to_string() << "\n"; 
-
-//         //subtract repeatedly
-//         while (compareMagnitudeUnInt(remainder, divisor) != -1) { //ie until remainder is smaller than divisor
-//             UnlimitedInt* temp1 = UnlimitedInt::sub(remainder, divisor);
-//             delete remainder; remainder = temp1; //replace remainder by new remainder
-
-//             UnlimitedInt* temp2 = UnlimitedInt::add(quotient, q);
-//             delete quotient; quotient = temp2; // replace quotient by new quotient
-//             std::cout << "remainder: " <<remainder -> to_string() << ", quotient: " << quotient->to_string() << "\n";
-//         } //now, remainder<=divisor
-//         // delete divisor; divisor = new UnlimitedInt(i2 -> to_string());
-//         //make prep for next iteration;
-//         newDivisor.pop_back(); quotientAdder.pop_back();
-//         delete divisor; divisor = nullptr;
-//         delete q; q = nullptr;
-//     }
-
-//     return quotient->to_string();
-// }
-
-// string remMagUnInt(UnlimitedInt* i1, UnlimitedInt* i2) {//not needed now
-//     UnlimitedInt* quotient = new UnlimitedInt("0");
-//     UnlimitedInt* remainder = new UnlimitedInt(i1 -> to_string());
-    
-//     std::cout << quotient->to_string() << " " << remainder -> to_string()  << "\n"; 
-
-//     int n = (remainder->get_size() - i2->get_size());
-//     std::cout << n << "\n";
-
-//     string newDivisor = i2 -> to_string(); string quotientAdder = "1";
-//     while (n>0) {
-//         newDivisor += "0";quotientAdder += "0"; n--;
-//     } //we will use these strings for generating divisors and quotient counter
-
-//     std::cout<<"newDivisor: "<< newDivisor<< ", quotientAdder: "<<quotientAdder<<"\n";
-
-//     while (remainder->get_size() > i2->get_size()) {
-
-//         //generate new divisor
-//         UnlimitedInt* divisor = new UnlimitedInt(newDivisor);
-//         UnlimitedInt* q = new UnlimitedInt(quotientAdder);
-
-//         std::cout << remainder -> to_string() << " " << divisor -> to_string() << " " << quotient->to_string() << "\n"; 
-
-//         //subtract repeatedly
-//         while (compareMagnitudeUnInt(remainder, divisor) != -1) { //ie until remainder is smaller than divisor
-//             UnlimitedInt* temp1 = UnlimitedInt::sub(remainder, divisor);
-//             delete remainder; remainder = temp1; //replace remainder by new remainder
-
-//             UnlimitedInt* temp2 = UnlimitedInt::add(quotient, q);
-//             delete quotient; quotient = temp2; // replace quotient by new quotient
-//             std::cout << "remainder: " <<remainder -> to_string() << ", quotient: " << quotient->to_string() << "\n";
-//         } //now, remainder<=divisor
-//         // delete divisor; divisor = new UnlimitedInt(i2 -> to_string());
-//         //make prep for next iteration;
-//         newDivisor.pop_back(); quotientAdder.pop_back();
-//         delete divisor; divisor = nullptr;
-//         delete q; q = nullptr;
-//     }
-
-//     return remainder->to_string();
-// }
 
 UnlimitedInt* UnlimitedInt::div(UnlimitedInt* i1, UnlimitedInt* i2) { //tested, works
     
@@ -675,49 +578,49 @@ string UnlimitedInt::to_string() {
 
 
 
-int main() {
-    // string s = "12402";
-    // std::cout << "hello1\n";
-    // UnlimitedInt* x = new UnlimitedInt(s);
-    // std::cout << "hello2\n";
-    // int n = x->get_size();
-    // int* arr = x->get_array();
-    // int cap = x->get_capacity();
-    // std::cout << x -> get_size() << " " << x-> get_array() << " " << x->get_sign() <<" " << x->get_capacity() << "\n";
+// int main() {
+//     // string s = "12402";
+//     // std::cout << "hello1\n";
+//     // UnlimitedInt* x = new UnlimitedInt(s);
+//     // std::cout << "hello2\n";
+//     // int n = x->get_size();
+//     // int* arr = x->get_array();
+//     // int cap = x->get_capacity();
+//     // std::cout << x -> get_size() << " " << x-> get_array() << " " << x->get_sign() <<" " << x->get_capacity() << "\n";
 
-    // for (int i = 0; i<cap; i++) {
-    //     std::cout << arr[i] << " ";
-    // }
-    // std::cout << "\n";
+//     // for (int i = 0; i<cap; i++) {
+//     //     std::cout << arr[i] << " ";
+//     // }
+//     // std::cout << "\n";
 
-    // std::cout << x->to_string();
+//     // std::cout << x->to_string();
 
-    string y = "57834582";
-    string z = "-22";
+//     string y = "72";
+//     string z = "0";
 
-    UnlimitedInt* a = new UnlimitedInt(y);
-    UnlimitedInt* b = new UnlimitedInt(z);
+//     UnlimitedInt* a = new UnlimitedInt(y);
+//     UnlimitedInt* b = new UnlimitedInt(z);
 
-    std::cout << a->to_string() << "\n";
-    std::cout << b->to_string() << " " << b->get_sign() << "\n";
+//     std::cout << a->to_string() << "\n";
+//     std::cout << b->to_string() << " " << b->get_sign() << "\n";
 
 
-    UnlimitedInt* c = new UnlimitedInt();
+//     UnlimitedInt* c = new UnlimitedInt();
 
-    c = UnlimitedInt::mod(a, b);
+//     c = UnlimitedInt::mul(a, b);
 
-    std::cout << c->to_string() << "\n";
-    // std::cout << magnitude(z);
+//     std::cout << c->to_string() << "\n";
+//     // std::cout << magnitude(z);
 
-    // divResult trial = divString("9354739941", "29939");
+//     // divResult trial = divString("9354739941", "29939");
 
-    // cout << trial.r << "\n";
+//     // cout << trial.r << "\n";
 
-    // string w = y;
+//     // string w = y;
 
-    // w = subStringSmallFromBig(w, z);
+//     // w = subStringSmallFromBig(w, z);
 
-    // std::cout << y << "\n";
+//     // std::cout << y << "\n";
 
-    // return 0;
-}
+//     // return 0;
+// }
