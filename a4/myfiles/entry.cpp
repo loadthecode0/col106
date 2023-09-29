@@ -4,7 +4,7 @@
 
 SymEntry::SymEntry() {
     key = "newEntry"; //new root key approx in the middle of alphabet
-    val = 0;
+    val = new UnlimitedRational();
     left = nullptr;
     right = nullptr;
 }

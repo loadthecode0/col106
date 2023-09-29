@@ -2,8 +2,13 @@
 /* unless EXPLICTLY clarified on Piazza. */
 #include "symtable.h"
 
+//DELETE THESE!
+#include <iostream>
+using namespace std;
+//DELETE THESE!
+
 SymbolTable::SymbolTable() {
-    root = nullptr;
+    root = new SymEntry();
     size = 0;
 }
 
@@ -21,16 +26,28 @@ SymbolTable::~SymbolTable() {
     treeDelete(root);
 }
 
+SymEntry* entryInsert (SymEntry* entry, string k, UnlimitedRational* v) { //checked, works
+    cout<<"helloinsert " << k <<"is the key\n" ;
+
+    if (entry == nullptr) {
+        return new SymEntry(k ,v);
+    }
+
+    if (k < entry->key) {
+        entry->left = entryInsert(entry->left, k, v);
+    } else if (k > entry -> key) {
+        entry -> right = entryInsert(entry->right, k, v);
+    }
+
+    return entry;
+}
+
 void SymbolTable::insert(string k, UnlimitedRational* v) {
-    SymEntry* curr = root;
-    while (curr!=nullptr) {
-        if (k < curr->key) {
-            curr = curr->left;
-        } else { //k>curr->key
-            curr = curr->right;
-        }
-    } //curr = nullptr now
-    curr = new SymEntry(k, v);
+    SymEntry* e = entryInsert(root, k, v);
+    size++;
+    if (root->left) {
+        cout << root->left->key << "\n";
+    }
 }
 
 SymEntry* entryDelete(SymEntry* entry, string k) {
@@ -75,18 +92,49 @@ SymEntry* entryDelete(SymEntry* entry, string k) {
 
 void SymbolTable::remove(string k){
     entryDelete(root, k);
+    size--;
+}
+
+SymEntry* entrySearch (SymEntry* entry, string k) {
+    if (entry->key == k) {
+        return entry;
+    }
+
+    if (k < entry->key) {
+        return entrySearch(entry->left, k);
+    }
+
+    if (k > entry->key) {
+        return entrySearch(entry->right, k);
+    }
 }
 
 UnlimitedRational* SymbolTable::search(string k){
+    std::cout << "hello search" << " varname: " << k << "\n";
     SymEntry* curr = root;
-    while (curr!=nullptr && curr->key != k) {
-        if (k < curr->key) {
-            curr = curr->left;
-        } else { //k>curr->key
-            curr = curr->right;
-        }
-    } //curr = nullptr or required node now; test cases will be valid
-    return curr->val;
+    // cout << curr->key << " " << curr->val->get_frac_str() << "\n";
+    // cout << curr->right->key << " " << curr->right->val->get_frac_str() << "\n";
+    return entrySearch(root, k)->val;
+    // while (curr!=nullptr) {
+    //     cout << curr->key << " x " << curr->val->get_frac_str() << "\n";
+    //     while (k < curr->key && curr->left != nullptr) {
+            
+    //         cout << curr->key << " l " << curr->val->get_frac_str() << "\n";
+    //         curr = curr->left;
+    //     } 
+        
+    //     while (k > curr->key){ //k>curr->key
+            
+    //         cout << curr->key << " r " << curr->val->get_frac_str() << "\n";
+    //         curr = curr->right;
+    //         cout<<"hello"<<"\n";
+    //     }
+
+    //     if (curr->key == k) {
+    //     return curr->val;
+    //     }
+    //     cout << curr->key << " y " << curr->val->get_frac_str() << "\n";
+    // } //curr = nullptr or required node now; but test cases will be valid    
 }
 
 int SymbolTable::get_size(){

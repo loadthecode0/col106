@@ -261,55 +261,55 @@ string subStringSmallFromBig (const string &s1, const string &s2) { //tested, wo
     return out;
 }
 
-string divString(const string &s1, const string &s2) {
-    string quotient = "0";
-    string remainder = s1;
+// string divString(const string &s1, const string &s2) {
+//     string quotient = "0";
+//     string remainder = s1;
     
-    std::cout << quotient<< " " << remainder  << "\n"; 
+//     std::cout << quotient<< " " << remainder  << "\n"; 
 
-    int n = (s1.length() - s2.length());
-    std::cout << n << "\n";
+//     int n = (s1.length() - s2.length());
+//     std::cout << n << "\n";
 
-    string divisor = s2; string quotientAdder = "1";
-    while (n>0) {
-        divisor += "0"; quotientAdder += "0"; n--;
-    } //we will use these strings for generating divisors and quotient counter
+//     string divisor = s2; string quotientAdder = "1";
+//     while (n>0) {
+//         divisor += "0"; quotientAdder += "0"; n--;
+//     } //we will use these strings for generating divisors and quotient counter
 
-    std::cout<<"reminder: "<<remainder<<" divisor: "<< divisor<< ", quotientAdder: "<<quotientAdder<<"\n";
+//     std::cout<<"reminder: "<<remainder<<" divisor: "<< divisor<< ", quotientAdder: "<<quotientAdder<<"\n";
 
-    // while (remainder.length() > s2.length()) {
+//     // while (remainder.length() > s2.length()) {
 
-    //     std::cout << remainder << " " << divisor << " " << quotient<< "\n"; 
+//     //     std::cout << remainder << " " << divisor << " " << quotient<< "\n"; 
 
-    //     // subtract repeatedly
-    //     while (remainder > divisor || remainder == divisor) { //ie until remainder is smaller than divisor
-    //         cout << "hello\n";
-            // remainder = subStringSmallFromBig(remainder, divisor);
-            // quotient = addMagnitudeString(quotient, quotientAdder);
+//     //     // subtract repeatedly
+//     //     while (remainder > divisor || remainder == divisor) { //ie until remainder is smaller than divisor
+//     //         cout << "hello\n";
+//             // remainder = subStringSmallFromBig(remainder, divisor);
+//             // quotient = addMagnitudeString(quotient, quotientAdder);
             
-            // std::cout << "remainder: " <<remainder << ", quotient: " << quotient << "\n";
-    //     } //now, remainder<=divisor
-    //     //make prep for next iteration;
-        // divisor.pop_back(); quotientAdder.pop_back();
-        // std::cout<<"divisor: "<< divisor<< ", quotientAdder: "<<quotientAdder<<"\n";
-    // }
-    while (remainder > s2) {
-        while (compareMa) {
-            cout << "hello\n";
-            remainder = subStringSmallFromBig(remainder, divisor);
-            quotient = addMagnitudeString(quotient, quotientAdder);        
-            std::cout << "remainder: " <<remainder << ", quotient: " << quotient << "\n";
-        }
-        divisor.pop_back(); quotientAdder.pop_back();
-        std::cout<<"remainder: " <<remainder<<", divisor: "<< divisor<< ", quotientAdder: "<<quotientAdder<<"\n";
-    }       
+//             // std::cout << "remainder: " <<remainder << ", quotient: " << quotient << "\n";
+//     //     } //now, remainder<=divisor
+//     //     //make prep for next iteration;
+//         // divisor.pop_back(); quotientAdder.pop_back();
+//         // std::cout<<"divisor: "<< divisor<< ", quotientAdder: "<<quotientAdder<<"\n";
+//     // }
+//     while (remainder > s2) {
+//         while (compareMa) {
+//             cout << "hello\n";
+//             remainder = subStringSmallFromBig(remainder, divisor);
+//             quotient = addMagnitudeString(quotient, quotientAdder);        
+//             std::cout << "remainder: " <<remainder << ", quotient: " << quotient << "\n";
+//         }
+//         divisor.pop_back(); quotientAdder.pop_back();
+//         std::cout<<"remainder: " <<remainder<<", divisor: "<< divisor<< ", quotientAdder: "<<quotientAdder<<"\n";
+//     }       
 
-    return quotient;
-}
+//     return quotient;
+// }
 
 void f3 () {
-    string s1 = "73461638"; string s2 = "22";
-    cout << divString(s1, s2);
+    string s1 = "VAL"; string s2 = "22";
+    cout << (s1 == "VAL");
 }
 
 void f4() {
