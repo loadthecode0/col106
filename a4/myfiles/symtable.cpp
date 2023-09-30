@@ -27,7 +27,7 @@ SymbolTable::~SymbolTable() {
 }
 
 SymEntry* entryInsert (SymEntry* entry, string k, UnlimitedRational* v) { //checked, works
-    cout<<"helloinsert " << k <<"is the key\n" ;
+    // cout<<"helloinsert " << k <<"is the key\n" ;
 
     if (entry == nullptr) {
         return new SymEntry(k ,v);
@@ -46,7 +46,7 @@ void SymbolTable::insert(string k, UnlimitedRational* v) {
     SymEntry* e = entryInsert(root, k, v);
     size++;
     if (root->left) {
-        cout << root->left->key << "\n";
+        // cout << root->left->key << "\n";
     }
 }
 
@@ -110,7 +110,7 @@ SymEntry* entrySearch (SymEntry* entry, string k) {
 }
 
 UnlimitedRational* SymbolTable::search(string k){
-    std::cout << "hello search" << " varname: " << k << "\n";
+    // std::cout << "hello search" << " varname: " << k << "\n";
     SymEntry* curr = root;
     // cout << curr->key << " " << curr->val->get_frac_str() << "\n";
     // cout << curr->right->key << " " << curr->right->val->get_frac_str() << "\n";

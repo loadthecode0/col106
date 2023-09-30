@@ -10,7 +10,6 @@
 void checkEvalTreeBasic(ExprTreeNode *root, std::vector<std::string> &evalOutput, int &lineCount, bool &error){
     if(root == nullptr){
         error = true;
-        std::cout << "error" << std::endl;
         std::cerr << "Eval tree isn't built correctly" << std::endl;
         return;
     }
@@ -21,7 +20,6 @@ void checkEvalTreeBasic(ExprTreeNode *root, std::vector<std::string> &evalOutput
     checkEvalTreeBasic(root->right, evalOutput, lineCount, error);
     if(root->evaluated_value->get_frac_str() != evalOutput[lineCount]){
         error = true;
-        std::cout << "error" << std::endl;
         std::cerr << "Eval tree isn't built correctly" << std::endl;
         return;
     }
@@ -31,21 +29,17 @@ void checkEvalTreeBasic(ExprTreeNode *root, std::vector<std::string> &evalOutput
 void checkParseTreeBasic(ExprTreeNode *root, std::vector<std::string> &tokenVector, bool &error, bool isMainRoot = false){
     if(root == nullptr){
         error = true;
-        std::cout << "error" << std::endl;
         std::cerr << "Parse tree isn't built correctly" << std::endl;
         return;
     }
     if(isMainRoot){
         if(root->left == nullptr || root->right == nullptr){
             error = true;
-            std::cout << "error" << std::endl;
             std::cerr << "Parse tree isn't built correctly at node :=" << std::endl;
-            
             return;
         }
 
         checkParseTreeBasic(root->left, tokenVector, error);
-        std::cout << "---trace\n";
         tokenVector.push_back(":=");
 
         const bool needsParentheses = (root->right->type != "VAR" && root->right->type != "VAL");
@@ -64,9 +58,7 @@ void checkParseTreeBasic(ExprTreeNode *root, std::vector<std::string> &tokenVect
     }
 
     if(root->type == "VAR"){
-        std::cout << "---trace2\n";
         tokenVector.push_back(root->id);
-        cout << root->id << "\n";
         return;
     }
     if(root->type == "VAL"){
@@ -75,7 +67,6 @@ void checkParseTreeBasic(ExprTreeNode *root, std::vector<std::string> &tokenVect
     }
     if(root->left == nullptr || root->right == nullptr){
         error = 1;
-        std::cout << "error" << std::endl;
         std::cerr << "Parse tree isn't built correctly" << std::endl;
         return;
     }
@@ -102,7 +93,6 @@ void checkParseTreeBasic(ExprTreeNode *root, std::vector<std::string> &tokenVect
         tokenVector.push_back("/");
     } else {
         error = 1;
-        std::cout << "error" << std::endl;
         std::cerr << "Invalid type detected in the parse Tree, neither of VAR, VAL, ADD, SUB, MUL, DIV FOUND "<<root->type << std::endl;
         return; 
     }
@@ -123,14 +113,12 @@ void checkParseTreeBasic(ExprTreeNode *root, std::vector<std::string> &tokenVect
 
 int main() {
     for(int  fileNum = 1; fileNum <= NUM_FILES; fileNum++) {
-        std::cout << "---trace3, filenum; " << fileNum<< "\n";
         Evaluator evaluator;
         std::string filePath = "./test_cases/test_" + std::to_string(fileNum) + ".txt";
 
         std::ifstream inputFile(filePath);
 
         if (!inputFile.is_open()) {
-            std::cout << "error" << std::endl;
             std::cerr << "Failed to open the file: " << filePath << std::endl;
             return 1;
         }
@@ -141,7 +129,6 @@ int main() {
         std::ifstream evalFile(evalFilePath);
 
         if (!evalFile.is_open()) {
-            std::cout << "error" << std::endl;
             std::cerr << "Failed to open the file: " << evalFilePath << std::endl;
             return 1;
         }
@@ -166,36 +153,23 @@ int main() {
             }
             evaluator.parse(tokens);
             std::vector<std::string> tokenVector;
-            
             bool parseError = false;
             checkParseTreeBasic(evaluator.expr_trees[evaluator.expr_trees.size() - 1], tokenVector, parseError, true);
-            
             if(tokenVector != tokens || parseError){
-                
-                if (tokenVector != tokens) {std::cout << "Token error" << std::endl;}
-                for (string x:tokenVector) {
-                    cout << x << " ";
-                }
-                cout << "\n";
-                if (parseError) {std::cout << "parse error" << std::endl;}
-                
                 std::cerr << "Parse tree isn't built correctly for line number "<< lineNum <<" in test case " <<fileNum << std::endl;
                 return 1;
             }
             else{
-                // std::cout << "error" << std::endl;
                 std::cout << "Parse tree built correctly for line number "<< lineNum <<" in test case " <<fileNum << std::endl;
             }
             evaluator.eval();
             bool evalError = false;
             checkEvalTreeBasic(evaluator.expr_trees[evaluator.expr_trees.size() - 1]->right, evalOutput, evalCurr, evalError);
             if(evalError){
-                std::cout << "error" << std::endl;
                 std::cerr << "Eval tree isn't built correctly for line number "<< lineNum <<" in test case " <<fileNum << std::endl;
                 return 1;
             }
             else{
-                // std::cout << "error" << std::endl;
                 std::cout << "Eval tree built correctly for line number "<< lineNum <<" in test case " <<fileNum << std::endl;
             }
             lineNum++;

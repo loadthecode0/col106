@@ -267,7 +267,7 @@ UnlimitedRational* UnlimitedRational::add(UnlimitedRational* i1, UnlimitedRation
 
     UnlimitedInt* num = UnlimitedInt::add(UnlimitedInt::mul(p1, b), UnlimitedInt::mul(p2, a) );
     UnlimitedInt* den = UnlimitedInt::mul(i1->get_q(), b);
-    cout << i1->get_q()->to_string() << "\n";
+    // cout << i1->get_q()->to_string() << "\n";
 
     delete a; delete b;
 
@@ -285,7 +285,7 @@ UnlimitedRational* UnlimitedRational::sub(UnlimitedRational* i1, UnlimitedRation
 
     UnlimitedInt* num = UnlimitedInt::sub(UnlimitedInt::mul(p1, b), UnlimitedInt::mul(p2, a) );
     UnlimitedInt* den = UnlimitedInt::mul(i1->get_q(), b);
-    cout << i1->get_q()->to_string() << "\n";
+    // cout << i1->get_q()->to_string() << "\n";
 
     delete a; delete b;
 
@@ -306,11 +306,11 @@ UnlimitedRational* UnlimitedRational::div(UnlimitedRational* i1, UnlimitedRation
 
 // int main () {
     
-//     string x = "216";
-//     string y = "3";
+//     string x = "63";
+//     string y = "1";
 
-//     string z = "48";
-//     string w = "0";
+//     string z = "7";
+//     string w = "1";
 
 //     UnlimitedInt *m = new UnlimitedInt(x);
 //     UnlimitedInt *n = new UnlimitedInt(y);
@@ -323,7 +323,7 @@ UnlimitedRational* UnlimitedRational::div(UnlimitedRational* i1, UnlimitedRation
 //     std::cout <<r->get_p_str() << " " << r->get_q_str() << " " << r -> get_frac_str() << "\n";
 //     std::cout <<s->get_p_str() << " " << s->get_q_str() << " " << s -> get_frac_str() << "\n";
 //     // std:: cout << s->to_string() << "\n";
-//     UnlimitedRational *t = UnlimitedRational::mul(r, s);
+//     UnlimitedRational *t = UnlimitedRational::sub(r, s);
 //     cout << t->get_frac_str() << "\n";
 //     // std::cout << gcdMagnitude("0", "2325234") << "\n";
 

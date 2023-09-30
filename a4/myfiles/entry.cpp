@@ -17,6 +17,6 @@ SymEntry::SymEntry(string k, UnlimitedRational* v) {
 }
 
 SymEntry::~SymEntry() {
-    delete left; left = nullptr;
-    delete right; right = nullptr;
+    // delete left; left = nullptr;
+    // delete right; right = nullptr;
 }

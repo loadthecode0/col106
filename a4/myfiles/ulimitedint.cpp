@@ -341,7 +341,7 @@ string mulMagnitude (int* arr1, int* arr2, int sz1, int sz2) { //
             else {carry = 0;}
             s = char(t+48) + s;
         }  
-        std :: cout << s << "\n";
+        // std :: cout << s << "\n";
     }
 
     if (carry > 0) {
@@ -470,7 +470,7 @@ UnlimitedInt* UnlimitedInt::sub(UnlimitedInt* i1, UnlimitedInt* i2) {
             if (s1 < 0) { //and s2<0
                 return new UnlimitedInt("-" + magnitude); 
             } else { //s1, s2 > 0
-                return new UnlimitedInt("-" + magnitude); 
+                return new UnlimitedInt(magnitude); 
             }         
         } else if (comp == -1) { //|i1| < |i2|
             string magnitude = subStringSmallFromBig(mag2, mag1);
