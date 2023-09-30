@@ -2,11 +2,6 @@
 /* unless EXPLICTLY clarified on Piazza. */
 #include "symtable.h"
 
-//DELETE THESE!
-#include <iostream>
-using namespace std;
-//DELETE THESE!
-
 SymbolTable::SymbolTable() {
     root = new SymEntry();
     size = 0;
@@ -26,6 +21,7 @@ SymbolTable::~SymbolTable() {
     treeDelete(root);
 }
 
+//utility function for recursive insertion
 SymEntry* entryInsert (SymEntry* entry, string k, UnlimitedRational* v) { //checked, works
     // cout<<"helloinsert " << k <<"is the key\n" ;
 
@@ -47,6 +43,7 @@ void SymbolTable::insert(string k, UnlimitedRational* v) {
     size++;
 }
 
+//utility function for recursive deletion
 SymEntry* entryDelete(SymEntry* entry, string k) {
     if (entry == nullptr) {
         return entry;
@@ -92,6 +89,7 @@ void SymbolTable::remove(string k){
     size--;
 }
 
+//utility function for recursive search
 SymEntry* entrySearch (SymEntry* entry, string k) {
     if (entry->key == k) {
         return entry;

@@ -2,18 +2,29 @@
 /* unless EXPLICTLY clarified on Piazza. */
 #include "evaluator.h"
 
-//DELETE THESE!
-#include <iostream>
-using namespace std;
-//DELETE THESE!
-
 Evaluator::Evaluator() {
     expr_trees = {}; //empty vector of parse trees
     symtable = new SymbolTable(); //empty symbol table initialized
 }
 
+//utility function for recursive deletion of full tree
+void treeDelete (ExprTreeNode* root) {
+    if (root == nullptr) {
+        return;
+    } 
+    treeDelete (root->left);
+    treeDelete (root->right);
+    if (root->val != nullptr) {delete root-> val;}
+    if (root->evaluated_value != nullptr) {delete root->evaluated_value;}
+    delete root; 
+}
+
 Evaluator::~Evaluator() {
-    expr_trees.clear();
+    while(expr_trees.size() > 0) {
+        ExprTreeNode* n = expr_trees[expr_trees.size() - 1];
+        expr_trees.pop_back();
+        treeDelete(n);
+    }
     delete symtable;
 }
 
@@ -22,7 +33,8 @@ void Evaluator::parse(vector<string> code) {
     ExprTreeNode* parseTree = new ExprTreeNode();
     parseTree->type = "EQ";
     
-    parseTree->left = new ExprTreeNode("VAR", new UnlimitedInt(0));
+    parseTree->left = new ExprTreeNode();
+    parseTree->left->type = "VAR";
     parseTree->left->id = code[0];
 
     parseTree->right = new ExprTreeNode();
@@ -33,7 +45,6 @@ void Evaluator::parse(vector<string> code) {
     for (int i = 2; i<code.size(); i++) {
 
         if (code[i] == "(") {
-            // std::cout <<"token: "<<code[i] << ", type: " << curr->type << "\n";
             curr->left = new ExprTreeNode();
             parent.push_back(curr);
             curr = curr->left;

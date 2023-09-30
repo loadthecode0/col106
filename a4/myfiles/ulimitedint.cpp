@@ -2,14 +2,10 @@
 /* unless EXPLICTLY clarified on Piazza. */
 #include "ulimitedint.h"
 
-//DELETE THESE!
-#include <iostream>
-using namespace std;
-//DELETE THESE!
-
-
 //maintain that size always gives exact num of digits (no leading zeros)
 
+
+//CONSTRUCTORS
 UnlimitedInt::UnlimitedInt() { //default constructor
     unlimited_int = new int[1];
     unlimited_int[0] = 0;
@@ -49,6 +45,8 @@ UnlimitedInt::UnlimitedInt(int* ulimited_int, int cap, int sgn, int sz) { // Com
     sign = sgn;
 } 
 
+
+//PURE FUNCTIONS
 int UnlimitedInt::get_size() { 
     return size;
 }
@@ -65,12 +63,15 @@ int UnlimitedInt::get_capacity() {
     return capacity;
 }
 
+
 UnlimitedInt::~UnlimitedInt() { //destructor
     size = 0;
     capacity = 0;
     delete [] unlimited_int;
 }
 
+
+//UTILITY FUNCTIONS
 string magnitude(string k) {
     if (k[0] == '-') {        
         string out = "";
@@ -378,6 +379,8 @@ divResult divString(const string &s1, const string &s2) {
     return divResult(quotient, remainder);
 }
 
+
+//ARITHMETIC FUNCTIONS
 UnlimitedInt* UnlimitedInt::add(UnlimitedInt* i1, UnlimitedInt* i2) {
     int s1 = i1 -> get_sign(); int s2 = i2 -> get_sign();
 
@@ -571,54 +574,3 @@ string UnlimitedInt::to_string() {
     }
     return s;
 }
-
-
-
-
-
-// int main() {
-//     // string s = "12402";
-//     // std::cout << "hello1\n";
-//     // UnlimitedInt* x = new UnlimitedInt(s);
-//     // std::cout << "hello2\n";
-//     // int n = x->get_size();
-//     // int* arr = x->get_array();
-//     // int cap = x->get_capacity();
-//     // std::cout << x -> get_size() << " " << x-> get_array() << " " << x->get_sign() <<" " << x->get_capacity() << "\n";
-
-//     // for (int i = 0; i<cap; i++) {
-//     //     std::cout << arr[i] << " ";
-//     // }
-//     // std::cout << "\n";
-
-//     // std::cout << x->to_string();
-
-//     string y = "72";
-//     string z = "0";
-
-//     UnlimitedInt* a = new UnlimitedInt(y);
-//     UnlimitedInt* b = new UnlimitedInt(z);
-
-//     std::cout << a->to_string() << "\n";
-//     std::cout << b->to_string() << " " << b->get_sign() << "\n";
-
-
-//     UnlimitedInt* c = new UnlimitedInt();
-
-//     c = UnlimitedInt::mul(a, b);
-
-//     std::cout << c->to_string() << "\n";
-//     // std::cout << magnitude(z);
-
-//     // divResult trial = divString("9354739941", "29939");
-
-//     // cout << trial.r << "\n";
-
-//     // string w = y;
-
-//     // w = subStringSmallFromBig(w, z);
-
-//     // std::cout << y << "\n";
-
-//     // return 0;
-// }

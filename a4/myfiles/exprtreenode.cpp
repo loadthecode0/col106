@@ -4,8 +4,8 @@
 
 ExprTreeNode::ExprTreeNode() {
     type = "newNode"; //dummy value
-    val = new UnlimitedRational();
-    evaluated_value = new UnlimitedRational();;
+    val = nullptr;
+    evaluated_value =nullptr;
     left = nullptr;
     right = nullptr;
 }
@@ -13,7 +13,7 @@ ExprTreeNode::ExprTreeNode() {
 ExprTreeNode::ExprTreeNode(string t, UnlimitedInt* v) {
     type = t;
     val = new UnlimitedRational(v, new UnlimitedInt("1"));
-    evaluated_value = new UnlimitedRational();
+    evaluated_value = new UnlimitedRational(new UnlimitedInt("0"), new UnlimitedInt("1"));
     left = nullptr;
     right = nullptr;
 }
@@ -21,23 +21,11 @@ ExprTreeNode::ExprTreeNode(string t, UnlimitedInt* v) {
 ExprTreeNode::ExprTreeNode(string t, UnlimitedRational* v) {
     type = t;
     val = v;
-    evaluated_value = new UnlimitedRational();
+    evaluated_value = new UnlimitedRational(new UnlimitedInt("0"), new UnlimitedInt("1"));
     left = nullptr;
     right = nullptr;
 }
 
-//utility function for recursive deletion of full tree
-void treeDelete (ExprTreeNode* root) {
-    if (root == nullptr) {
-        return;
-    } 
-    treeDelete (root->left);
-    treeDelete (root->right);
-    delete root-> val;
-    delete root->evaluated_value;
-    delete root; 
-}
-
 ExprTreeNode::~ExprTreeNode() {
-    treeDelete(this);
+
 }

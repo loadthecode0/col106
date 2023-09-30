@@ -2,11 +2,6 @@
 /* unless EXPLICTLY clarified on Piazza. */
 #include "ulimitedrational.h"
 
-//DELETE THESE!
-#include <iostream>
-using namespace std;
-//DELETE THESE!
-
 //utility functions with strings
 
 string magnitude2(string k) {
@@ -251,8 +246,6 @@ string UnlimitedRational::get_frac_str() {
     return (p->to_string()+ "/" + q->to_string());
 }
 
-//tested till here, works
-
 // Rational arithmetic operations
 UnlimitedRational* UnlimitedRational::add(UnlimitedRational* i1, UnlimitedRational* i2) {
     //read input
@@ -301,30 +294,3 @@ UnlimitedRational* UnlimitedRational::div(UnlimitedRational* i1, UnlimitedRation
     UnlimitedInt* q1 = i1->get_q(); UnlimitedInt* q2 = i2->get_q();
     return new UnlimitedRational (UnlimitedInt::mul(p1, q2), UnlimitedInt::mul(q1, p2));
 }
-
-// int main () {
-    
-//     string x = "63";
-//     string y = "1";
-
-//     string z = "7";
-//     string w = "1";
-
-//     UnlimitedInt *m = new UnlimitedInt(x);
-//     UnlimitedInt *n = new UnlimitedInt(y);
-//     UnlimitedInt *p = new UnlimitedInt(z);
-//     UnlimitedInt *q = new UnlimitedInt(w);
-
-//     UnlimitedRational *r = new UnlimitedRational(m, n);
-//     UnlimitedRational *s = new UnlimitedRational(p, q);
-
-//     std::cout <<r->get_p_str() << " " << r->get_q_str() << " " << r -> get_frac_str() << "\n";
-//     std::cout <<s->get_p_str() << " " << s->get_q_str() << " " << s -> get_frac_str() << "\n";
-//     // std:: cout << s->to_string() << "\n";
-//     UnlimitedRational *t = UnlimitedRational::sub(r, s);
-//     cout << t->get_frac_str() << "\n";
-//     // std::cout << gcdMagnitude("0", "2325234") << "\n";
-
-
-//     return 0;
-// }
