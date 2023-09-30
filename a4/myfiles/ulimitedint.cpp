@@ -151,7 +151,6 @@ int compareMagnitudeUnInt (UnlimitedInt* i1, UnlimitedInt* i2) {
 
 string addMagnitude (int* arr1, int* arr2, int sz1, int sz2) { //tested, works
     string s = "";
-    int t = 0;
     int carry = 0;
     int index = 0; 
     int bigSize; int smallSize;
@@ -201,7 +200,6 @@ string addMagnitude (int* arr1, int* arr2, int sz1, int sz2) { //tested, works
 string addMagnitudeString (const string &s1, const string &s2) { //tested, works
     int sz1 = s1.length(); int sz2 = s2.length();
     string s = "";
-    int t = 0;
     int carry = 0;
     int index = 0; 
     int bigSize; int smallSize;
@@ -238,7 +236,6 @@ string addMagnitudeString (const string &s1, const string &s2) { //tested, works
 string subSmallFromBig (int* arr1, int* arr2, int bigSize, int smallSize) { //tested, works
     //pre-condition: num(arr1) > num(arr2), so sz1 >=  sz2
     string s = "";
-    int t = 0;
     int carry = 0; //will be -1 in case of borrow
     int index = 0; 
 
@@ -275,7 +272,6 @@ string subStringSmallFromBig (const string &s1, const string &s2) { //tested, wo
     int bigSize = s1.length(); int smallSize = s2.length();
     //pre-condition: num(s1) > num(s2), so sz1 >=  sz2
     string s = "";
-    int t = 0;
     int carry = 0;
     int index = 0; 
 
@@ -532,7 +528,8 @@ UnlimitedInt* UnlimitedInt::div(UnlimitedInt* i1, UnlimitedInt* i2) { //tested, 
                 return new UnlimitedInt("-" + divMag);
             }
         } 
-    }
+    } 
+    return new UnlimitedInt("0"); //hopefully will never come here
 }
 
 UnlimitedInt* UnlimitedInt::mod(UnlimitedInt* i1, UnlimitedInt* i2) { //tested, works
@@ -563,6 +560,7 @@ UnlimitedInt* UnlimitedInt::mod(UnlimitedInt* i1, UnlimitedInt* i2) { //tested, 
             }
         } 
     }
+    return new UnlimitedInt("0"); //hopefully will never come here
 }
 
 string UnlimitedInt::to_string() {

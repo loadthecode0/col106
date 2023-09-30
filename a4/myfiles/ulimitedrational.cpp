@@ -46,7 +46,6 @@ int compareMagnitudeString2 (const string &s1, const string &s2) { //tested, wor
 string addMagnitudeString2 (const string &s1, const string &s2) { //tested, works
     int sz1 = s1.length(); int sz2 = s2.length();
     string s = "";
-    int t = 0;
     int carry = 0;
     int index = 0; 
     int bigSize; int smallSize;
@@ -84,7 +83,6 @@ string subStringSmallFromBig2 (const string &s1, const string &s2) { //tested, w
     int bigSize = s1.length(); int smallSize = s2.length();
     //pre-condition: num(s1) > num(s2), so sz1 >=  sz2
     string s = "";
-    int t = 0;
     int carry = 0;
     int index = 0; 
 

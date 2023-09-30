@@ -43,11 +43,8 @@ SymEntry* entryInsert (SymEntry* entry, string k, UnlimitedRational* v) { //chec
 }
 
 void SymbolTable::insert(string k, UnlimitedRational* v) {
-    SymEntry* e = entryInsert(root, k, v);
+    entryInsert(root, k, v);
     size++;
-    if (root->left) {
-        // cout << root->left->key << "\n";
-    }
 }
 
 SymEntry* entryDelete(SymEntry* entry, string k) {
@@ -107,34 +104,11 @@ SymEntry* entrySearch (SymEntry* entry, string k) {
     if (k > entry->key) {
         return entrySearch(entry->right, k);
     }
+    return nullptr; //default: hopefully, will never be used
 }
 
 UnlimitedRational* SymbolTable::search(string k){
-    // std::cout << "hello search" << " varname: " << k << "\n";
-    SymEntry* curr = root;
-    // cout << curr->key << " " << curr->val->get_frac_str() << "\n";
-    // cout << curr->right->key << " " << curr->right->val->get_frac_str() << "\n";
     return entrySearch(root, k)->val;
-    // while (curr!=nullptr) {
-    //     cout << curr->key << " x " << curr->val->get_frac_str() << "\n";
-    //     while (k < curr->key && curr->left != nullptr) {
-            
-    //         cout << curr->key << " l " << curr->val->get_frac_str() << "\n";
-    //         curr = curr->left;
-    //     } 
-        
-    //     while (k > curr->key){ //k>curr->key
-            
-    //         cout << curr->key << " r " << curr->val->get_frac_str() << "\n";
-    //         curr = curr->right;
-    //         cout<<"hello"<<"\n";
-    //     }
-
-    //     if (curr->key == k) {
-    //     return curr->val;
-    //     }
-    //     cout << curr->key << " y " << curr->val->get_frac_str() << "\n";
-    // } //curr = nullptr or required node now; but test cases will be valid    
 }
 
 int SymbolTable::get_size(){
