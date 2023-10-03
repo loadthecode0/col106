@@ -1,11 +1,11 @@
-delete extra headers from .cpp files.
-remove all hellos.
+delete extra headers from .cpp files. ----done
+remove all hellos. -- done
 complete mod in unlimited_int ---- done
 convert add, sub, mul to use strings instead of arrays
-think about possible double free error and missing delete statements. 
-test and debug symEntry 
-test and debug expressionTreeNode
-change constructor of exprtreenode if you want, val and aval_val not always required, not really needed tot initialize
+think about possible double free error and missing delete statements.  ---done
+test and debug symEntry ---done
+test and debug expressionTreeNode ---done
+change constructor of exprtreenode if you want, val and aval_val not always required, not really needed tot initialize ---done
 
 to test: 
 g++ ulimitedint.cpp ulimitedrational.cpp -o test
