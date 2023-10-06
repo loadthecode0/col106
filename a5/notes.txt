@@ -1,0 +1,2 @@
+1. change avl deletion util function
+2. confirm about parser symtable editing thing

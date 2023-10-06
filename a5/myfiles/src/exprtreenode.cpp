@@ -5,11 +5,16 @@
 //Write your code below this line
 
 ExprTreeNode::ExprTreeNode(){
-
+    type = "newNode"; //dummy value
+    left = nullptr;
+    right = nullptr;
 }
 
 ExprTreeNode::ExprTreeNode(string t,int v){
-  
+    type = t;
+    num = v;
+    left = nullptr;
+    right = nullptr;
 }
 
 ExprTreeNode::~ExprTreeNode(){
