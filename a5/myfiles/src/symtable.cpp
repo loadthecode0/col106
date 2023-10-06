@@ -4,111 +4,182 @@
 
 //Write your code below this line
 
+//DELETE THIS!!
+#include <iostream>
+using namespace std;
+//DELETE THIS!!
+
+
 SymbolTable::SymbolTable(){
-    root = new SymNode(); //node with dummy value
+    root = nullptr;
     size = 0;
 }
 
-//utility function for recursive insertion
-SymNode* entryInsert (SymNode* entry, string k) { //checked, works
+//utility function for height update
+void updateHt(SymNode* node) {
+    //can be called for either null or non-null nodes
+    if (node == nullptr) {
+        return;
+    }
+    //precondition: node != nullptr
+    int lh = -1; int rh = -1; //acc to nullptr condition
+    if (node->left != nullptr) {
+        lh = node->left->height;
+    }
+    if (node->right != nullptr) {
+        rh = node->right->height;
+    }
+    node->height = max(lh, rh) + 1;
+}
 
-    if (entry == nullptr) {
-        return new SymNode(k);
+//utility function to find balance factor 
+int bf (SymNode* entry) {
+    int lh = 0; int rh = 0;
+
+    if (entry -> left == nullptr) {
+        lh = -1;
+    } else {
+        lh = entry->left->height;
     }
 
+    if (entry -> right == nullptr) {
+        rh = -1;
+    } else {
+        rh = entry->right->height;
+    }
+
+    return (lh-rh);
+}
+
+//utility function to balance height
+SymNode* balanceHeight(SymNode* entry) {
+    int balanceFactor = bf(entry);
+    if (balanceFactor > 1) { //left subtree is longer than right by more than 1
+        int bf1 = bf(entry->left);
+        if (bf1 >= 0) { //left subtree of left child of current node is larger than right subtree => left left imbalance
+            return entry ->RightRightRotation();
+        }
+        else { //opp of above case
+            return entry->LeftRightRotation();
+        }
+    }
+    else if (balanceFactor < -1) { //right subtree is longer than left by more than 1
+        int bf1 = bf(entry->right);
+        if (bf1 > 0) { //left subtree of right child of current node is larger than left subtree => right left imbalance
+            return entry->RightLeftRotation();
+        }
+        else { //opp of above case
+            return entry->LeftLeftRotation();
+        }
+    }
+    return entry; //default return; hopefully we'll not reach here
+}
+
+//utility function for recursive insertion
+SymNode* entryInsert (SymNode* entry, SymNode* parent, string k) { //checked, works
+
+    if (entry == nullptr) {
+        SymNode* x = new SymNode(k);
+        x->par = parent;
+        return x; //a leaf is always balanced
+    }    
+
     if (k < entry->key) { //--1
-        entry->left = entryInsert(entry->left, k);
+        entry->left = entryInsert(entry->left, entry, k);
     } else if (k > entry -> key) { //--2
-        entry -> right = entryInsert(entry->right, k);
+        entry -> right = entryInsert(entry->right, entry, k);
     } else { //key already exists
         return entry;
     }
 
     //this point is reached only when conditions 1 or 2 are met, ie one of the subtrees is modified
     //height balancing
-    int balanceFactor = entry->left->height - entry->right->height;
+
+    updateHt(entry);
+
+    int balanceFactor = bf(entry);
 
     if (balanceFactor > 1) { //left subtree is longer than right by more than 1
         if (k < entry->left->key) { //insertion was in left subtree of left child of current node => left left imbalance
-            return entry->RightRightRotation();
+            return entry ->RightRightRotation();
         }
         else if (k > entry->left->key) { //opp of above case
             return entry->LeftRightRotation();
         }
     }
     else if (balanceFactor < -1) { //right subtree is longer than left by more than 1
-        if (k < entry->left->key) { //insertion was in left subtree of right child of current node => right left imbalance
+        if (k < entry->right->key) { //insertion was in left subtree of right child of current node => right left imbalance
             return entry->RightLeftRotation();
         }
-        else if (k > entry->left->key) { //opp of above case
+        else if (k > entry->right->key) { //opp of above case
             return entry->LeftLeftRotation();
         }
     }
+    return entry; //default return; hopefully we'll not reach here
 }
 
 //utility function for recursive deletion, returns null if key DNE
 //CHECK THIS
 SymNode* entryDelete(SymNode* entry, string k) {
+
     if (entry == nullptr) {
         return entry;
     }
 
     if (entry->key > k) {
         entry -> left = entryDelete(entry->left, k);
-        return entry;
+        updateHt(entry);
+        entry = balanceHeight(entry);
     } else if (entry->key < k){ 
         entry->right = entryDelete(entry->right, k);
+        updateHt(entry);
+        entry = balanceHeight(entry);
+    } else if (k == entry -> key) {
+        if (entry->left == nullptr || entry->right == nullptr) { //one child or no child
+
+            SymNode* child = nullptr;
+            if (entry->left != nullptr) {child = entry->left;}
+            if (entry->right != nullptr) {child = entry->right;}
+
+            if (entry->par != nullptr) {
+                if (k < entry -> par -> key) {
+                    entry -> par -> left = child;
+                } else {
+                    entry->par->right = child;
+                }
+                updateHt(entry->par);
+            }
+
+            if (child != nullptr) {
+                child -> par = entry -> par;
+                child = balanceHeight(child);  
+            }
+
+            delete entry;       
+            return child;
+        }
+
+        else {
+            SymNode* temp = entry -> right;
+            while (temp -> left != nullptr) {
+                temp = temp->left;
+            }
+            string copyKey = temp->key;
+            int copyAdd = temp->address;
+            temp = entryDelete(temp, copyKey);
+            updateHt(entry);
+            entry->key = copyKey; //replace
+            entry->address = copyAdd;
+            entry = balanceHeight(entry);
+        }
         return entry;
     }
-
-    if (entry->left == nullptr) { //one or both children missing
-        SymNode* temp = entry->right;
-        delete entry; return temp;
-    } else if (entry->right == nullptr) { //one child missing
-        SymNode* temp = entry->left;
-        delete entry; return temp;
-    } else { 
-        SymNode* p = entry;
-        SymNode* s = entry->right;
-        while (s->left != nullptr) {
-            p = s; s=s->left;
-        }
-        if (p != entry) {
-            p->left = s->right;
-        } else {
-            p->right = s->right;
-        }
-
-        entry->key = s->key;
-
-        delete s; //delete successor
-        return entry;
-
-    }
-
-    //height balancing
-    int balanceFactor = entry->left->height - entry->right->height;
-
-    if (balanceFactor > 1) { //left subtree is longer than right by more than 1
-        if (k < entry->left->key) { //insertion was in left subtree of left child of current node => left left imbalance
-            return entry->RightRightRotation();
-        }
-        else if (k > entry->left->key) { //opp of above case
-            return entry->LeftRightRotation();
-        }
-    }
-    else if (balanceFactor < -1) { //right subtree is longer than left by more than 1
-        if (k < entry->left->key) { //insertion was in left subtree of right child of current node => right left imbalance
-            return entry->RightLeftRotation();
-        }
-        else if (k > entry->left->key) { //opp of above case
-            return entry->LeftLeftRotation();
-        }
-    }
+    return entry;
 }    
 
-void SymbolTable::insert(string k){
-    entryInsert(root, k);
+void SymbolTable::insert(string k){ //checked, works
+    //pre condition: not already present in the table
+    root = entryInsert(root, nullptr, k);
     size++;
 }
 
@@ -156,9 +227,37 @@ void treeDelete (SymNode* root) {
     } 
     treeDelete (root->left);
     treeDelete (root->right);
-    delete root; 
+    delete root; root = nullptr;
 }
 
 SymbolTable::~SymbolTable() {
     treeDelete(root);
+}
+
+int main() {
+    
+    SymbolTable* s = new SymbolTable();
+    cout << "size: " << s->get_size() << "\n";
+    
+    
+    
+    
+    s->insert("b");
+    s->insert("c");
+    s->insert("d");
+    s->insert("a");
+    cout << "size: " << s->get_size() << "\n";
+    cout << s->get_root()->key << "\n";
+    cout << s->get_root()->left->key << "\n";
+    cout << s->get_root()->right->key << "\n";
+    cout << s->get_root()->left->left->key << "\n";
+    cout << "size: " << s->get_size() << "\n";
+    // s->remove("a");
+    // cout << s->get_root()->key << "\n";
+    // cout << "size: " << s->get_size() << "\n";
+    cout << s->get_root()->left->key << "\n";
+    s->remove("d");
+    cout << "size: " << s->get_size() << "\n";
+
+    return 0;
 }

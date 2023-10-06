@@ -4,9 +4,14 @@
 
 //Write your code below this line
 
+//DELETE THIS!!
+#include <iostream>
+using namespace std;
+//DELETE THIS!!
+
 SymNode::SymNode(){
     key = "newNode";
-    height = 1;
+    height = 0;
     par = nullptr;
     left = nullptr;
     right = nullptr;
@@ -14,70 +19,97 @@ SymNode::SymNode(){
 
 SymNode::SymNode(string k){
     key = k;
-    height = 1;
+    height = 0;
     par = nullptr;
     left = nullptr;
     right = nullptr;
+}
+
+void updateHeight(SymNode* node) {
+    //precondition: node != nullptr
+    int lh = -1; int rh = -1; //acc to nullptr condition
+    if (node->left != nullptr) {
+        lh = node->left->height;
+    }
+    if (node->right != nullptr) {
+        rh = node->right->height;
+    }
+    node->height = max(lh, rh) + 1;
 }
 
 SymNode* SymNode::LeftLeftRotation(){ //for right-right imbalance, called for subtree rooted at 'this'
     SymNode* r = right;
     SymNode* rlc = r->left;
     //rotate
-    if (key < par->key) { //ie current node is the left child of its parent
-        par->left = r;
-    } else { //ie current node is the right child of its parent
-        par->right = r;
+    if (par != nullptr) {
+        if (key < par->key) { //ie current node is the left child of its parent
+            par->left = r;
+        } else { //ie current node is the right child of its parent
+            par->right = r;
+        }
+        
     }
     r->par = par;
+    
     right = rlc;
-    rlc->par = this;
+
+    if (rlc != nullptr) {
+        rlc->par = this;
+    }
+    
     r->left = this;
     par = r;
 
     //height update
-    height = max(left->height, right->height) + 1;
-    r->height = max(r->left->height, r->right->height) + 1;
-    par->height = max(par->left->height, par->right->height) + 1;
+    updateHeight(this);
+    updateHeight(r);
+    if (r->par != nullptr) {updateHeight(r->par);}
 
     return r;
 }
 
+//checked RRRot, works
 SymNode* SymNode::RightRightRotation(){ //for left-left imbalance, called for subtree rooted at 'this'
     SymNode* l = left;
     SymNode* lrc = l->right;
     //rotate
-    if (key < par->key) { //ie current node is the left child of its parent
-        par->left = l;
-    } else { //ie current node is the right child of its parent
-        par->right = l;
+    if (par != nullptr) {
+        cout << "hello5\n";
+        if (key < par->key) { //ie current node is the left child of its parent
+            par->left = l;
+        } else { //ie current node is the right child of its parent
+            par->right = l;
+        }  
     }
     l->par = par;
+
     left = lrc;
-    lrc->par = this;
+    if (lrc != nullptr) {
+        lrc->par = this;
+    }
+    
     l->right = this;
     par = l;
 
-    //height update
-    height = max(left->height, right->height) + 1;
-    l->height = max(l->left->height, l->right->height) + 1;
-    par->height = max(par->left->height, par->right->height) + 1;
-
+    updateHeight(this);
+    updateHeight(l);
+    if (l->par != nullptr) {updateHeight(l->par);}
     return l;
 }
 
 SymNode* SymNode::LeftRightRotation(){ //for left-right imbalance, called for subtree rooted at 'this'
-    SymNode* x = left->LeftLeftRotation();
+    left->LeftLeftRotation();
     return RightRightRotation(); //height update implicit
 }
 
 SymNode* SymNode::RightLeftRotation(){ //for right-left imbalance, called for subtree rooted at 'this'
-    SymNode* x = right->RightRightRotation();
+    right->RightRightRotation();
     return LeftLeftRotation(); //height update implicit
 }
 
 SymNode::~SymNode(){
-    delete par;
-    delete left;
-    delete right;    
+    left = nullptr;
+    right = nullptr;
+    par = nullptr;
 }
+
