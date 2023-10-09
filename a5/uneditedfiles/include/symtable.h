@@ -5,8 +5,8 @@ using namespace std;
 
 class SymbolTable {
 private:
-    int size;
-    SymNode* root;
+    int size = 0;
+    SymNode* root = NULL;
 
 public: 
 

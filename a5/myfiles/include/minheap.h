@@ -4,8 +4,8 @@ using namespace std;
 
 class MinHeap{
   private:
-  int size;
-  HeapNode* root;
+  int size = 0;
+  HeapNode* root = NULL;
   
   public:
   MinHeap();

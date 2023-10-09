@@ -11,8 +11,8 @@ public:
     //Store the value of the number if type is "VAL"
     int num;
 
-    ExprTreeNode* left;
-    ExprTreeNode* right;
+    ExprTreeNode* left = NULL;
+    ExprTreeNode* right = NULL;
 
     ExprTreeNode();
     ExprTreeNode(string t,int v);

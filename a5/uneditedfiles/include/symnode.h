@@ -8,9 +8,9 @@ public:
     int height;
     int address=-1;
     
-    SymNode* par;
-    SymNode* left;
-    SymNode* right;
+    SymNode* par = NULL;
+    SymNode* left = NULL;
+    SymNode* right = NULL;
 
     SymNode();
     SymNode(string k);

@@ -8,7 +8,8 @@ class Parser {
 public:
     vector<ExprTreeNode*> expr_trees;
     SymbolTable* symtable;
-
+    int last_deleted; // Optional parameter to store the memory index of 
+                    // the last deleted element
     Parser();
     ~Parser();
     
