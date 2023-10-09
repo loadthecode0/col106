@@ -74,7 +74,6 @@ SymNode* SymNode::RightRightRotation(){ //for left-left imbalance, called for su
     SymNode* lrc = l->right;
     //rotate
     if (par != nullptr) {
-        cout << "hello5\n";
         if (key < par->key) { //ie current node is the left child of its parent
             par->left = l;
         } else { //ie current node is the right child of its parent

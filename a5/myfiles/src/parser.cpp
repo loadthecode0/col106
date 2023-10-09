@@ -20,6 +20,7 @@ void Parser::parse(vector<string> expression){
 
     if (prefix == "del") {
         parseTree->left->type = "DEL";
+        last_deleted = symtable->search(expression[2]);
         symtable -> remove(expression[2]);
     }
 

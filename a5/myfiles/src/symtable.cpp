@@ -51,7 +51,7 @@ int bf (SymNode* entry) {
     return (lh-rh);
 }
 
-//utility function to balance height
+//utility function to balance height by rotations
 SymNode* balanceHeight(SymNode* entry) {
     int balanceFactor = bf(entry);
     if (balanceFactor > 1) { //left subtree is longer than right by more than 1
@@ -184,7 +184,7 @@ void SymbolTable::insert(string k){ //checked, works
 }
 
 void SymbolTable::remove(string k){
-    entryDelete(root, k);
+    root = entryDelete(root, k);
     size--;
 }
 
@@ -234,30 +234,35 @@ SymbolTable::~SymbolTable() {
     treeDelete(root);
 }
 
-int main() {
+// int main() {
     
-    SymbolTable* s = new SymbolTable();
-    cout << "size: " << s->get_size() << "\n";
+//     SymbolTable* s = new SymbolTable();
+//     cout << "size: " << s->get_size() << "\n";
     
-    
-    
-    
-    s->insert("b");
-    s->insert("c");
-    s->insert("d");
-    s->insert("a");
-    cout << "size: " << s->get_size() << "\n";
-    cout << s->get_root()->key << "\n";
-    cout << s->get_root()->left->key << "\n";
-    cout << s->get_root()->right->key << "\n";
-    cout << s->get_root()->left->left->key << "\n";
-    cout << "size: " << s->get_size() << "\n";
-    // s->remove("a");
-    // cout << s->get_root()->key << "\n";
-    // cout << "size: " << s->get_size() << "\n";
-    cout << s->get_root()->left->key << "\n";
-    s->remove("d");
-    cout << "size: " << s->get_size() << "\n";
+//     s->insert("a");
+//     s->insert("b");
+//     s->insert("c");
+//     s->insert("e");
+//     s->insert("d");
 
-    return 0;
-}
+//     cout << "size: " << s->get_size() << "\n";
+//     cout << s->get_root()->key << "\n";
+//     cout << s->get_root()->left->key << "\n";
+//     cout << s->get_root()->right->key << "\n";
+//     cout << s->get_root()->right->right->key << "\n";
+//     cout << s->get_root()->right->left->key << "\n";
+//     cout << "size: " << s->get_size() << "\n";
+//     // s->remove("a");
+//     // cout << s->get_root()->key << "\n";
+//     // cout << "size: " << s->get_size() << "\n";
+//     // cout << s->get_root()->left->key << "\n";
+//     s->remove("a");
+//     cout << s->get_root()->key << "\n";
+//     cout << s->get_root()->left->key << "\n";
+//     cout << s->get_root()->right->key << "\n";
+//     cout << s->get_root()->left->right->key << "\n";
+//     // cout << s->get_root()->right->left->key << "\n";
+//     cout << "size: " << s->get_size() << "\n";
+
+//     return 0;
+// }
