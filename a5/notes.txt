@@ -3,3 +3,4 @@
 3. why are we deleting from symtable? If we delete from symtable how will we locate it's address to be deleted?
 4. delete couts
 5. delete added headers
+6. set all to NULL
