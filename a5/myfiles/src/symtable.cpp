@@ -4,12 +4,6 @@
 
 //Write your code below this line
 
-//DELETE THIS!!
-#include <iostream>
-using namespace std;
-//DELETE THIS!!
-
-
 SymbolTable::SymbolTable(){
     root = nullptr;
     size = 0;
@@ -119,7 +113,6 @@ SymNode* entryInsert (SymNode* entry, SymNode* parent, string k) { //checked, wo
 }
 
 //utility function for recursive deletion, returns null if key DNE
-//CHECK THIS
 SymNode* entryDelete(SymNode* entry, string k) {
 
     if (entry == nullptr) {
@@ -233,36 +226,3 @@ void treeDelete (SymNode* root) {
 SymbolTable::~SymbolTable() {
     treeDelete(root);
 }
-
-// int main() {
-    
-//     SymbolTable* s = new SymbolTable();
-//     cout << "size: " << s->get_size() << "\n";
-    
-//     s->insert("a");
-//     s->insert("b");
-//     s->insert("c");
-//     s->insert("e");
-//     s->insert("d");
-
-//     cout << "size: " << s->get_size() << "\n";
-//     cout << s->get_root()->key << "\n";
-//     cout << s->get_root()->left->key << "\n";
-//     cout << s->get_root()->right->key << "\n";
-//     cout << s->get_root()->right->right->key << "\n";
-//     cout << s->get_root()->right->left->key << "\n";
-//     cout << "size: " << s->get_size() << "\n";
-//     // s->remove("a");
-//     // cout << s->get_root()->key << "\n";
-//     // cout << "size: " << s->get_size() << "\n";
-//     // cout << s->get_root()->left->key << "\n";
-//     s->remove("a");
-//     cout << s->get_root()->key << "\n";
-//     cout << s->get_root()->left->key << "\n";
-//     cout << s->get_root()->right->key << "\n";
-//     cout << s->get_root()->left->right->key << "\n";
-//     // cout << s->get_root()->right->left->key << "\n";
-//     cout << "size: " << s->get_size() << "\n";
-
-//     return 0;
-// }

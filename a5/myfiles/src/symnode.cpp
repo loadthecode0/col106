@@ -4,11 +4,6 @@
 
 //Write your code below this line
 
-//DELETE THIS!!
-#include <iostream>
-using namespace std;
-//DELETE THIS!!
-
 SymNode::SymNode(){
     key = "newNode";
     height = 0;
@@ -111,4 +106,3 @@ SymNode::~SymNode(){
     right = nullptr;
     par = nullptr;
 }
-
