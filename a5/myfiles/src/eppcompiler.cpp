@@ -10,30 +10,43 @@ EPPCompiler::EPPCompiler(){
 
 EPPCompiler::EPPCompiler(string out_file,int mem_limit){
     int memory_size = mem_limit;
-
-    mem_loc.resize(memory_size); //make and initialize list of empty memory locations
-    for (int i = 0; i<memory_size; i++) {
-        mem_loc[i] = i;
+    // mem_loc.resize(memory_size); //make and initialize list of empty memory locations
+    // for (int i = 0; i<memory_size; i++) {
+    //     mem_loc[i] = i;
+    // }
+    for (int i = 0; i<memory_size; i++) { //make and initialize MinHeap of empty memory locations
+        least_mem_loc.push_heap(i);
     }
-    
+
     output_file = out_file;
 }
 
 void EPPCompiler::compile(vector<vector<string>> code){
+    cout << "hello11\n";
     int nlines = code.size();
     for (int i = 0; i< nlines; i++) {
+        cout << "hello4\n";
         vector<string> currLine = code[i]; //read current line
+        cout << "hello4\n";
         targ.parse(currLine); //parse current line
 
         if (currLine[0] == "del") {
+            cout << "hello1\n";
             int delAddress = targ.last_deleted; //returns memory address last deleted
-            mem_loc.push_back(delAddress);
+            cout << "hello2\n";
+            least_mem_loc.push_heap(delAddress);
+            cout << least_mem_loc.get_min() << "\n";
+            cout << "delAddress: " << delAddress << "\n";
+            cout << "hello3\n";
         }
         else if (currLine[0] != "ret") { //variable
+            cout << "hello5\n";
             int varAddress = targ.symtable->search(currLine[0]); 
+            cout << "varAddress: "<<varAddress << "\n";
             if (varAddress == -1) { //address not assigned before, ie, new variable
-                targ.symtable->assign_address(currLine[0], mem_loc.back());
-                mem_loc.pop_back();
+                targ.symtable->assign_address(currLine[0], least_mem_loc.get_min());
+                cout << least_mem_loc.get_min() << "\n";
+                least_mem_loc.pop();
             }
         }
 
@@ -107,3 +120,25 @@ void EPPCompiler::write_to_file(vector<string> commands){
 EPPCompiler::~EPPCompiler(){
 
 }
+
+// int main () {
+
+//     EPPCompiler* c=new EPPCompiler("outf.txt",2);
+    
+//     vector<string> x={"a",":=", "(","1", "+" ,"2",")"};
+//     vector<string> y={"b", ":=" ,"(","1","+","2",")"};
+//     vector<string> d={"ret", ":=", "(","a","+","b",")"};
+
+//     vector<vector<string>>p;
+//     p.push_back(x);
+//     p.push_back(y);
+//     p.push_back(d);
+//     cout<<"hello"<<endl;
+//     c->compile(p);
+//     std::cout<<"hey"<<std::endl;
+
+
+
+
+//     return 0;
+// }
