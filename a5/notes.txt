@@ -1,6 +1,6 @@
-1. change avl deletion util function
-2. confirm about parser symtable editing thing
-3. why are we deleting from symtable? If we delete from symtable how will we locate it's address to be deleted?
-4. delete couts
-5. delete added headers
-6. set all to NULL
+1. change avl deletion util function ---done
+2. confirm about parser symtable editing thing ---done
+3. why are we deleting from symtable? If we delete from symtable how will we locate it's address to be deleted? ---done
+4. delete couts ---done
+5. delete added headers ---done
+6. set all to NULL ---done

@@ -109,3 +109,22 @@ void EPPCompiler::write_to_file(vector<string> commands){
 EPPCompiler::~EPPCompiler(){
 
 }
+
+int main()
+{
+    vector<string> vec1 = {"a", ":=", "(", "1", "+", "2", ")"};
+    vector<string> vec2 = {"b", ":=", "(", "1", "+", "2", ")"};
+    vector<string> vec3 = {"del", ":=", "b"};
+    vector<string> vec4 = {"c", ":=", "(", "1", "+", "2", ")"};
+    vector<string> vec5 = {"ret", ":=", "(", "a", "+", "c", ")"};
+
+    vector<vector<string>> vec;
+    vec.push_back(vec1);
+    vec.push_back(vec2);
+    vec.push_back(vec3);
+    vec.push_back(vec4);
+    vec.push_back(vec5);
+    EPPCompiler *e = new EPPCompiler("x_file", 10);
+    e->compile(vec);
+    delete e;
+}
