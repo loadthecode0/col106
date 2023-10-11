@@ -4,3 +4,4 @@
 4. delete couts ---done
 5. delete added headers ---done
 6. set all to NULL ---done
+7. fix write to file

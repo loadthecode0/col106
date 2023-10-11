@@ -23,6 +23,7 @@ EPPCompiler::EPPCompiler(string out_file,int mem_limit){
 
 void EPPCompiler::compile(vector<vector<string>> code){
     int nlines = code.size();
+    vector<string>f_commds;
     for (int i = 0; i< nlines; i++) {
         vector<string> currLine = code[i]; //read current line
         targ.parse(currLine); //parse current line
@@ -42,9 +43,13 @@ void EPPCompiler::compile(vector<vector<string>> code){
         //generation of targ string for current line
         vector<string> outputLine = generate_targ_commands();
 
-        //writing to output file
-        write_to_file(outputLine);
+        for (const string & x : outputLine) {
+            f_commds.push_back(x);
+        }
+        
     }
+    //writing to output file
+    write_to_file(f_commds);
 }
 
 //helper function for modified post order traversal of parse tree
@@ -99,7 +104,7 @@ vector<string> EPPCompiler::generate_targ_commands(){
 
 void EPPCompiler::write_to_file(vector<string> commands){
     ofstream gen_file;
-    gen_file.open(output_file, std::ios::app);
+    gen_file.open(output_file);
     for (string x:commands) {
         gen_file << x << "\n";
     }
