@@ -95,7 +95,6 @@ if __name__ == '__main__':
     weightDict = {}
     print(parsedCmd)
     for i in range(0, len(parsedCmd), 2):
-        print(i)
         rawToken = parsedCmd[i]
         rawFreq = parsedCmd[i+1]
         weightDict[rawToken] = rawFreq
