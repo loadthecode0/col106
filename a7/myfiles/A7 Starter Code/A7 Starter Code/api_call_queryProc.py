@@ -14,19 +14,71 @@ def get_data(api):
         print(
             f"Hello person, there's a {response.status_code} error with your request")
 
-def get_user_data(api, parameters):
+def get_pos(parameters):
+    api = "http://text-processing.com/api/tag/"
     response = requests.post(f"{api}", data=parameters)
     if response.status_code == 200:
         print("sucessfully fetched the data with parameters provided")
-        print("self.formatted_print(): ")
-        formatted_print(response.json())
+        # formatted_print(response.json())
         response_json = json.loads(response.text)["text"]
-        print("response.json(): ", response.json())
-        # response__ = json.loads(response_json)
-        # print(response__)
         resp_str = json.dumps(response_json)
-        print("aList: ", resp_str)
-        return resp_str
+        print(resp_str)
+        if resp_str[-6:-3] in ["NNP", "NNPS"]:
+            return "propNoun"
+        else:
+            return "other"
+    else:
+        print(
+            f"Hello person, there's a {response.status_code} error with your request")
+
+def get_stem(parameters):
+    api = "http://text-processing.com/api/stem/"
+    response = requests.post(f"{api}", data=parameters)
+    if response.status_code == 200:
+        print("sucessfully fetched the data with parameters provided")
+        # formatted_print(response.json())
+        response_json = json.loads(response.text)["text"]
+        resp_str = json.dumps(response_json)
+        print(resp_str)
+        return resp_str[1:-1]
+    else:
+        print(
+            f"Hello person, there's a {response.status_code} error with your request")
+        
+def get_meaningful_stem(stem):
+    print ("get meaningful stem of", stem)
+    api = "https://api.datamuse.com/words?sl="
+    api += stem
+    response = requests.get(f"{api}&max=1")
+    if response.status_code == 200:
+        print("sucessfully fetched the data with parameters provided")
+        formatted_print(response.json())
+        response_json = json.loads(response.text)[0]["word"]
+        resp_str = json.dumps(response_json)
+        print(resp_str)
+        return resp_str[1:-1]
+    else:
+        print(
+            f"Hello person, there's a {response.status_code} error with your request")
+
+def get_synonyms(stem, num):
+    print ("get synonyms of", stem)
+    api = "https://api.datamuse.com/words?rel_syn="
+    api += stem
+    response = requests.get(f"{api}&max={num}")
+    if response.status_code == 200:
+        print("sucessfully fetched the data with parameters provided")
+        formatted_print(response.json())
+        response_json = json.loads(response.text)[:num]
+        myList = []
+        for x in range(len(response_json)) :
+            response_json_x = json.loads(response.text)[x]["word"]
+            myList.append(response_json_x)
+        print(myList)
+        return myList
+        # resp_str = json.dumps(response_json)
+        # print(resp_str)
+        # return resp_str
     else:
         print(
             f"Hello person, there's a {response.status_code} error with your request")
@@ -34,15 +86,17 @@ def get_user_data(api, parameters):
 def formatted_print(obj):
     text = json.dumps(obj, sort_keys=True, indent=4)
     print(text)
-
-# def __init__(self, api, text):
-#     # self.get_data(api)
-
-#     parameters = {
-#         "text": text
-#     }
     
-#     return self.get_user_data(api, parameters)
+    
+def processToken (token, posTagNo, num):
+    if (posTagNo == 0): #NNP or NNPS
+        print("Hello proper noun")
+        #write to file
+    # else :
+        
+        
+    
+    
 
 
 if __name__ == '__main__':
@@ -69,22 +123,46 @@ if __name__ == '__main__':
     print(bagCap)
     
     #calculate total of frequencies for proportion calc
-    totalFreq = sum(int(parsedCmd[i]) for i in range(1, len(parsedCmd), 2))
-    print(totalFreq)
+    weightDict = {}
+    for i in range(0, len(parsedCmd), 2):
+        rawToken = parsedCmd[i]
+        rawFreq = parsedCmd[i+1]
+    
+    totalInvFreq = sum((1/int(parsedCmd[i])) for i in range(1, len(parsedCmd), 2))
+    print(totalInvFreq)
     
     relWtDict = {}
     
     filename = 'query.txt' #contains processed tokens
     print(filename)
-    with open(filename, 'a') as f:
+    with open(filename, 'w') as f:
         for i in range(0, len(parsedCmd), 2):
             rawToken = parsedCmd[i]
             paramDict = {"text": rawToken}
-            api_call_response = get_user_data("http://text-processing.com/api/tag/", paramDict)
-            print(api_call_response)
-            rawFreq = parsedCmd[i+1]
-            print(rawToken, rawFreq)
-            relWtDict[rawToken] = (int(rawFreq)*bagCap/totalFreq) #round off
+            pos = get_pos( paramDict)
+            # print(api_call_response)
+            if pos == "propNoun":
+                f.write(f"{rawToken}!\n") #can modify marker for proper noun
+            else:
+                f.write(f"{rawToken}\n")
+                rawInvFreq = parsedCmd[i+1]
+                print(rawToken, rawInvFreq)
+                relWtDict[rawToken] = round((1/int(rawInvFreq))*bagCap/totalInvFreq) #round off
+                
+                # api_call_response = get_user_data("http://text-processing.com/api/tag/", paramDict)
+                stem = get_stem(paramDict)
+                print(len(stem))
+                meaningfulStem = get_meaningful_stem(stem)
+                print(meaningfulStem)
+                if (meaningfulStem != rawToken):
+                    f.write(f"{meaningfulStem}\n")
+                synList = get_synonyms(meaningfulStem, relWtDict[rawToken])
+                for x in synList:
+                    if (x != rawToken):
+                        f.write(f"{x}\n")
+                
+                
+                
 
     print(relWtDict)
     
