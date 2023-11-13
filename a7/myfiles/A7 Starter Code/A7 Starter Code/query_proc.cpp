@@ -122,7 +122,7 @@ vector<vector<string>> generateInputVector() {
 int main()
 
 {
-    vector<string> queryList = {"What", "is", "the", "meaning", "of", "OF", "life", "according", "to", "Mahatama", "Gandhi", "?"};
+    vector<string> queryList = {"What", "were", "Mahatma", "gandhi's", "views", "about", "himself", "according", "to", "Mahatama", "Gandhi", "?"};
     // vector<string> queryList = {"views", "partition", "Mahatama", "Gandhi", "?"};
     string apiCall = "python3 api_call_queryProc.py";
     generateQueryString(queryList, apiCall); //updates apiCall

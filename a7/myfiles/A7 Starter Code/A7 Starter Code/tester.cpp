@@ -81,7 +81,7 @@ int main()
         inputFile.close();
     }
 
-    string question = "What were Gandhi's views on the manner of how one should eat?";
+    string question = "What were Mahatama Gandhi's views on himself?";
 
     /*
         Part-1 : Get the top-k paragraphs
