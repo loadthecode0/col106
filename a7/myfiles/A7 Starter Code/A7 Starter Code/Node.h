@@ -2,10 +2,11 @@
 #include <string>
 using namespace std;
 
-class Node {
-public: 
-    Node* left;
-    Node* right;
+class Node
+{
+public:
+    Node *left;
+    Node *right;
 
     int book_code;
     int page;
