@@ -2,94 +2,57 @@ import requests
 import sys
 import json
 
-
-def get_data(api):
-    response = requests.get(f"{api}")
-    if response.status_code == 200:
-        print("sucessfully fetched the data")
-        formatted_print(response.json())
-    else:
-        print(
-            f"Hello person, there's a {response.status_code} error with your request")
-
-
 def get_pos(parameters):
     api = "http://text-processing.com/api/tag/"
     response = requests.post(f"{api}", data=parameters)
     if response.status_code == 200:
-        print("sucessfully fetched the data with parameters provided")
-        # formatted_print(response.json())
         response_json = json.loads(response.text)["text"]
         resp_str = json.dumps(response_json)
-        # print(resp_str)
         if resp_str[-6:-3] in ["NNP", "NNPS"]:
             return "propNoun"
         else:
             return "other"
     else:
-        print(
-            f"Hello person, there's a {response.status_code} error with your request")
-
+        return ""
 
 def get_stem(parameters):
     api = "http://text-processing.com/api/stem/"
     response = requests.post(f"{api}", data=parameters)
     if response.status_code == 200:
-        print("sucessfully fetched the data with parameters provided")
-        # formatted_print(response.json())
         response_json = json.loads(response.text)["text"]
         resp_str = json.dumps(response_json)
-        # print(resp_str)
         return resp_str[1:-1]
     else:
-        print(
-            f"Hello person, there's a {response.status_code} error with your request")
-
+        return ""
 
 def get_meaningful_stem(stem):
-    print("get meaningful stem of", stem)
     api = "https://api.datamuse.com/words?sl="
     api += stem
     response = requests.get(f"{api}&max=1")
     if response.status_code == 200:
-        print("sucessfully fetched the data with parameters provided")
-        # formatted_print(response.json())
         response_json = json.loads(response.text)[0]["word"]
         resp_str = json.dumps(response_json)
-        # print(resp_str)
         return resp_str[1:-1]
     else:
-        print(
-            f"Hello person, there's a {response.status_code} error with your request")
-
+        return ""
 
 def get_synonyms(stem, nbr="", num=0):
-    print("get synonyms of", stem)
     api = "https://api.datamuse.com/words?rel_syn="
     api += stem
     api += f"&max{num}"
     if nbr != "":
         api += "&topics=" + nbr
-    print("api now:", api)
     response = requests.get(f"{api}")  # include &topics={neighbour words}?
     if response.status_code == 200:
-        print("sucessfully fetched the data with parameters provided")
-        # formatted_print(response.json())
         response_json = json.loads(response.text)[:num]
         myList = []
         for x in range(len(response_json)):
             response_json_x = json.loads(response.text)[x]["word"]
             myList.append(response_json_x)
-        print(myList)
         return myList
     else:
-        print(
-            f"Hello person, there's a {response.status_code} error with your request")
+        return []
 
-
-def formatted_print(obj):
-    text = json.dumps(obj, sort_keys=True, indent=4)
-    print(text)
 
 
 if __name__ == '__main__':
@@ -176,7 +139,7 @@ if __name__ == '__main__':
 
     print("completed api calls")
 
-    # modifications to try:
+    # modifications to try: ----UPDATE: tried all
     # playing around with topics tag
     # relative proportions
-    # relative importance of returned synonyms in paragraph search to be considered?
+    # relative importance of returned synonyms in paragraph search to be considered
