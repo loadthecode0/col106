@@ -96,7 +96,7 @@ if __name__ == '__main__':
 
     # # Read the raw query tokens from the command line
     parsedCmd = sys.argv[1:]
-    bagCap = 2*len(parsedCmd)  # 4*no.of raw tokens --can be changed
+    bagCap = 2*len(parsedCmd)  # 4*no.of raw tokens
 
     # calculate total of frequencies for proportion calc
     weightDict = {}
@@ -105,7 +105,7 @@ if __name__ == '__main__':
         rawToken = parsedCmd[i]
         rawFreq = parsedCmd[i+1]
         if rawFreq != 0:
-            weightDict[rawToken] = rawFreq # rethink
+            weightDict[rawToken] = rawFreq
 
     print("weightDict", weightDict)
 
@@ -144,7 +144,8 @@ if __name__ == '__main__':
                     neighbor = otherNeighbor
 
             rawFreq = weightDict[token]
-            relWtDict[token] = round((1/int(rawFreq))*bagCap/(totalInvFreq))  # round off
+            relWtDict[token] = round(
+                (1/int(rawFreq))*bagCap/(totalInvFreq))  # round off
             paramDict = {"text": token}
             stem = get_stem(paramDict)
             print(stem)
@@ -154,10 +155,12 @@ if __name__ == '__main__':
                 synList1 = get_synonyms(token, neighbor, (relWtDict[token]))
                 synSet = set(synList1)
             else:
-                synList1 = get_synonyms(token, neighbor, round(relWtDict[token]/2))
+                synList1 = get_synonyms(
+                    token, neighbor, round(relWtDict[token]/2))
                 synSet = set(synList1)
                 f.write(f"{meaningfulStem}\n")
-                synList2 = get_synonyms(meaningfulStem, neighbor, round(relWtDict[token]/2))
+                synList2 = get_synonyms(
+                    meaningfulStem, neighbor, round(relWtDict[token]/2))
                 set2 = set(synList2)
                 synSet = synSet.union(set2)
 
